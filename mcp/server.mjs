@@ -163,12 +163,13 @@ server.registerTool(
     title: "Copy assets into a project",
     description:
       "Copy chosen assets to a directory, optionally with a typed manifest listing keys, " +
-      "dimensions, roles, tileability and CC0 attribution. The only tool here that writes.",
+      "dimensions, roles, tileability and CC0 attribution. 3D models (.gltf/.glb/.obj) also bring the " +
+      "buffers, .mtl files and textures they reference, at the same relative paths. The only tool here that writes.",
     inputSchema: {
       ids: z.array(z.number()).min(1).describe("Asset ids to copy"),
       destination: z.string().describe("Directory to copy into; created if absent"),
       manifest: z.boolean().optional().describe("Also write assets.manifest.json"),
-      flat: z.boolean().optional().describe("Flatten into one directory instead of mirroring pack paths"),
+      flat: z.boolean().optional().describe("Flatten into one directory instead of mirroring pack paths (models with dependencies keep pack paths)"),
     },
   },
   async ({ ids, destination, manifest, flat }) => {
@@ -178,7 +179,10 @@ server.registerTool(
       content: [{
         type: "text",
         text: `Copied ${r.copied} files to ${r.dest}` +
+              (r.dependencies ? ` + ${r.dependencies} files the models reference` : "") +
               (r.missing ? ` (${r.missing} missing from the corpus)` : "") +
+              r.warnings.map((w) => `\nWarning: ${w}`).join("") +
+              r.hints.map((h) => `\nHint: ${h}`).join("") +
               (manifest ? `\nWrote ${r.dest}/assets.manifest.json` : "") +
               `\nAssets are CC0 from kenney.nl — a donation link belongs in what you ship.`,
       }],

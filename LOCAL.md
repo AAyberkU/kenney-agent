@@ -159,3 +159,14 @@ repository, in Ayberk's Brain research notes.
     with nothing to show. MCP `search_assets` gained `kind`; `show` and
     `get_asset` print `preview_file`; `stats` counts previews.
   - `assets/renders/` is gitignored.
+- `assets install` / MCP `install_assets` copy what a 3D model references
+  (`lib/model-deps.mjs`: glTF buffers and images, GLB external textures such
+  as `Textures/colormap.png`, OBJ -> MTL -> `map_*` textures) at the same
+  relative path, once per file, listed as `dependencies` in the manifest.
+  - Absolute paths, URIs with a scheme and `..` leaving the pack are skipped
+    with a warning. All 5,208 GLB/glTF/OBJ files resolve with none skipped or
+    missing.
+  - With `--flat`, a model that has dependencies keeps its pack layout (with a
+    warning), because flattening would break its references.
+  - FBX is copied alone with a hint: the animated-character packs keep skins
+    in `Skins/`, which the file does not name.

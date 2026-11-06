@@ -85,7 +85,9 @@ Below, `assets` stands for that command.
    ```
 
    This copies the files and writes `assets.manifest.json` (keys, sizes,
-   roles, tileability, licence). Never edit files under `assets/experimental/`:
+   roles, tileability, licence). A 3D model brings the textures, buffers and
+   `.mtl` it references; an FBX character needs its skin PNG installed by id
+   from the pack's `Skins/` folder. Never edit files under `assets/experimental/`:
    they are the shared corpus.
 
 ## When the user says "you pick"

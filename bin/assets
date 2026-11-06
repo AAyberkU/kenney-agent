@@ -29,7 +29,8 @@ assets -- query the Kenney asset index
   assets audit   <ids|pack:path ...>          mark descriptions as checked by eye
   assets eval    [--validate] [--verbose]     recall@10 by tier
   assets install <pack|ids> --to <dir>        copy assets into a project
-                 [--manifest] [--flat]        + a typed manifest
+                 [--manifest] [--flat]        + a typed manifest (3D models
+                                              bring the files they reference)
   assets stats                                index summary
 
 audio and description helpers:
@@ -259,7 +260,9 @@ try {
         ids: idArgs.length ? idArgs : null, pack: packArg, to: flags.to,
         manifest: !!flags.manifest, flat: !!flags.flat,
       })
-      console.log(`  copied ${r.copied} files to ${r.dest}${r.missing ? ` (${r.missing} missing from corpus)` : ""}`)
+      console.log(`  copied ${r.copied} files to ${r.dest}${r.dependencies ? ` + ${r.dependencies} model dependencies` : ""}${r.missing ? ` (${r.missing} missing from corpus)` : ""}`)
+      for (const w of r.warnings) console.log(`  warn   ${w}`)
+      for (const h of r.hints) console.log(`  hint   ${h}`)
       if (flags.manifest) console.log(`  wrote  ${r.dest}/assets.manifest.json`)
       console.log(`  CC0 via kenney.nl -- consider donating: https://kenney.nl/donate`)
       break
