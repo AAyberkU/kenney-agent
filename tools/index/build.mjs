@@ -4,6 +4,7 @@ import { openDb, setMeta, assertFts5 } from "../../lib/db.mjs"
 import { assetsRoot, catalogPath, requireAssetsRoot } from "../../lib/config.mjs"
 import { classify, kindForExt } from "../../lib/classify.mjs"
 import { readDimensions } from "../../lib/dimensions.mjs"
+import { linkPreviews } from "../../lib/previews.mjs"
 
 function loadPacks(db) {
   const catalog = JSON.parse(fs.readFileSync(catalogPath(), "utf-8"))
@@ -133,6 +134,8 @@ export function build({ packs: only = null, ftsOnly = false } = {}) {
     console.log(`  catalog: ${n} packs`)
     const r = loadAssets(db, only)
     console.log(`  corpus:  ${r.files} files across ${r.packs} installed packs`)
+    const pv = linkPreviews(db, { packs: only })
+    console.log(`  previews: ${pv.corpus + pv.rendered}/${pv.models} models (${pv.corpus} from the corpus, ${pv.rendered} rendered), ${pv.specimens}/${pv.fonts} fonts`)
   }
   const indexed = rebuildFts(db)
   console.log(`  fts:     ${indexed} rows`)
