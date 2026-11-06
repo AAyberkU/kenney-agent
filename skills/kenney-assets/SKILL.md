@@ -26,11 +26,15 @@ Below, `assets` stands for that command.
 
 ## The loop
 
+0. **For an existing game, read its `assets.manifest.json` first** (written
+   by `assets install`). It lists the packs, sizes and styles the game already
+   uses; choose new assets that keep that look.
+
 1. **Search the local files** for what the game needs:
 
    ```bash
    assets search "side-view player walk cycle" --role character --limit 20
-   assets search "button click" --kind audio
+   assets search "button click" --kind audio --max-duration 0.5
    assets search "car glb" --kind other          # 3D models, fonts
    ```
 
@@ -95,19 +99,54 @@ Say which pack you picked and why, in one line.
 `--pack <slug>` · `--style` 1-bit | indexed | pixel-art | full-color
 `--tileable` (edges actually match) · `--min-size` / `--max-size` px
 `--described` / `--undescribed` · `--kind` image | audio | other
+`--min-duration` / `--max-duration` seconds (audio)
 `--limit` (default 20) · `--json` · `--atlas` (include sprite sheets)
 
 Other commands: `assets show <id>` (full record), `assets stats` (what is
 indexed), `assets link` (re-link the corpus after it changes, then
 `assets build && assets analyze`).
 
+## Audio
+
+Every sound has measured facts: `duration_s`, `sample_rate`, `channels`,
+`peak_db` and `mean_db` (dBFS), and `loudness_lufs` (EBU R128 integrated;
+empty for clips under 0.4 s, which are too short to measure that way).
+Search results show the duration; `assets show <id>` shows the rest.
+Match loudness across a game's sounds: prefer clips with similar mean or LUFS
+levels, or note which ones need gain.
+
+About 740 Kenney sounds also carry `sfx_tags` (category, use cases, mood) from
+the Open Game SFX Index. They are set per pack, not per sound: good for
+finding the right pack ("win jingle" -> music-jingles), not for telling two
+sounds in a pack apart. Listen before choosing.
+
+## Describing a pack with opaque names
+
+When a pack's file names say nothing (`tile_0047.png`) and it has no
+descriptions, describe it once so search can find its parts:
+
+1. `assets describe-sheets <pack> --undescribed` writes numbered sheets and
+   `key.json` (number -> path) to `index/describe/<pack>/`. Use `--trim` for
+   3D renders.
+2. Read every sheet. Write `{"<n>": "<description>", ...}` to a file, one
+   entry per number. Keep each short and factual: what is visibly there,
+   then `Used as:` search words (`"Red tiled roof, top-left corner. Used as:
+   red roof, roof, house."`). Never claim a facing, colour or action you did
+   not see. Also read the pack's `Sample.png` to see how parts fit together.
+3. `assets describe-sheets <pack> --apply <file>` merges them into
+   `descriptions/<pack>.json` (model `claude-code-subagent`; add
+   `--style pixel-art` where it fits).
+4. `assets descriptions import --packs <pack>`, then search to check.
+
 ## What to trust
 
 - **Measured from the pixels, reliable:** `width`/`height`, `style`,
   `tileable` and colours.
+- **Measured from the audio, reliable:** duration, sample rate, channels and
+  levels.
 - **Inferred from file and folder names, not authoritative:** `role` and
   `keywords`.
-- **Written descriptions:** about 6,500 assets have one. Where none exists,
+- **Written descriptions:** about 6,700 assets have one. Where none exists,
   look at a sheet.
 - **Pack tags and summaries for local packs:** from a vision pass over each
   pack's preview image.

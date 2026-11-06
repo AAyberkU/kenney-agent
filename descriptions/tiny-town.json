@@ -1,0 +1,930 @@
+{
+  "pack": "tiny-town",
+  "count": 132,
+  "assets": [
+    {
+      "path": "Tiles/tile_0000.png",
+      "observed": "Plain green grass tile. Used as: grass, ground tile, field.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0001.png",
+      "observed": "Green grass tile with darker grass tufts. Used as: grass, ground tile, field.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0002.png",
+      "observed": "Green grass tile with small orange and white flowers. Used as: grass, flowers, meadow, ground tile.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0003.png",
+      "observed": "Tall pointed orange-yellow tree, autumn colours. Used as: autumn tree, tree, forest, decoration.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0004.png",
+      "observed": "Tall pointed green tree. Used as: tree, pine, forest, decoration.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0005.png",
+      "observed": "Round green bush. Used as: bush, shrub, decoration.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0006.png",
+      "observed": "Green trees forest-cluster piece, trees along the bottom and right edge. Used as: forest edge, trees, tree cluster.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0007.png",
+      "observed": "Top of a green tree at the bottom of the tile. Used as: forest edge, tree top, tree cluster.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0008.png",
+      "observed": "Green trees forest-cluster piece, trees on the left and bottom. Used as: forest edge, trees, tree cluster.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0009.png",
+      "observed": "Orange autumn trees forest-cluster piece, trees along the bottom and right edge. Used as: autumn forest edge, trees, tree cluster.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0010.png",
+      "observed": "Top of an orange autumn tree at the bottom of the tile. Used as: autumn forest edge, tree top, tree cluster.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0011.png",
+      "observed": "Orange autumn trees forest-cluster piece, trees on the left and bottom. Used as: autumn forest edge, trees, tree cluster.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0012.png",
+      "observed": "Dirt ground with a grass border on the top and left: top-left corner. Used as: dirt path, road, ground edge, grass border.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0013.png",
+      "observed": "Dirt ground with a grass border along the top edge. Used as: dirt path, road, ground edge, grass border.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0014.png",
+      "observed": "Dirt ground with a grass border on the top and right: top-right corner. Used as: dirt path, road, ground edge, grass border.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0015.png",
+      "observed": "Round orange autumn tree with a trunk. Used as: autumn tree, tree, decoration.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0016.png",
+      "observed": "Round green tree with a trunk. Used as: tree, oak, decoration.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0017.png",
+      "observed": "Small green curling plant with two leaves. Used as: plant, sprout, vine, decoration.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0018.png",
+      "observed": "Green tree cut off at the right edge of the tile. Used as: forest edge, trees, tree cluster.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0019.png",
+      "observed": "Dense green trees filling the tile. Used as: forest, trees, tree cluster middle.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0020.png",
+      "observed": "Green tree cut off at the left edge of the tile. Used as: forest edge, trees, tree cluster.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0021.png",
+      "observed": "Orange autumn tree cut off at the right edge of the tile. Used as: autumn forest edge, trees, tree cluster.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0022.png",
+      "observed": "Dense orange autumn trees filling the tile. Used as: autumn forest, trees, tree cluster middle.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0023.png",
+      "observed": "Orange autumn tree cut off at the left edge of the tile. Used as: autumn forest edge, trees, tree cluster.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0024.png",
+      "observed": "Dirt ground with a grass border along the left edge. Used as: dirt path, road, ground edge, grass border.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0025.png",
+      "observed": "Plain dirt ground tile. Used as: dirt, path, road, ground tile.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0026.png",
+      "observed": "Dirt ground with a grass border along the right edge. Used as: dirt path, road, ground edge, grass border.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0027.png",
+      "observed": "Pointed orange-yellow autumn tree with a short trunk. Used as: autumn tree, tree, decoration.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0028.png",
+      "observed": "Pointed green tree with a short trunk. Used as: tree, pine, decoration.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0029.png",
+      "observed": "Two red mushrooms with white spots. Used as: mushroom, toadstool, decoration, forage.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0030.png",
+      "observed": "Green trees forest-cluster piece, trees along the top and right. Used as: forest edge, trees, tree cluster.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0031.png",
+      "observed": "Bottom of a green tree crown with trunk at the top of the tile. Used as: forest edge, tree cluster.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0032.png",
+      "observed": "Green trees forest-cluster piece, trees along the top and left. Used as: forest edge, trees, tree cluster.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0033.png",
+      "observed": "Orange autumn trees forest-cluster piece, trees along the top and right. Used as: autumn forest edge, trees, tree cluster.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0034.png",
+      "observed": "Bottom of an orange autumn tree crown with trunk at the top of the tile. Used as: autumn forest edge, tree cluster.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0035.png",
+      "observed": "Orange autumn trees forest-cluster piece, trees along the top and left. Used as: autumn forest edge, trees, tree cluster.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0036.png",
+      "observed": "Dirt ground with a grass border on the bottom and left: bottom-left corner. Used as: dirt path, road, ground edge, grass border.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0037.png",
+      "observed": "Dirt ground with a grass border along the bottom edge. Used as: dirt path, road, ground edge, grass border.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0038.png",
+      "observed": "Dirt ground with a grass border on the bottom and right: bottom-right corner. Used as: dirt path, road, ground edge, grass border.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0039.png",
+      "observed": "Dirt ground with a small grass patch in the top-left corner (inner corner). Used as: dirt path, inner corner, grass border.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0040.png",
+      "observed": "Dirt ground with a small grass patch in the top-right corner (inner corner). Used as: dirt path, inner corner, grass border.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0041.png",
+      "observed": "Dirt ground with a small grass patch in the bottom-right corner (inner corner). Used as: dirt path, inner corner, grass border.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0042.png",
+      "observed": "Dirt ground with a small grass patch in the bottom-left corner (inner corner). Used as: dirt path, inner corner, grass border.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0043.png",
+      "observed": "Grey stepping stones on grass. Used as: stone path, cobblestone, paving, walkway.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0044.png",
+      "observed": "Wooden fence corner: post with rails going right and down. Used as: fence, fence corner, wooden fence.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0045.png",
+      "observed": "Wooden fence junction: rails going left, right and down. Used as: fence, fence junction, wooden fence.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0046.png",
+      "observed": "Wooden fence corner: post with rails going left and down. Used as: fence, fence corner, wooden fence.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0047.png",
+      "observed": "Wooden fence post, top end of a vertical fence. Used as: fence, fence post, fence end, wooden fence.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0048.png",
+      "observed": "Blue-grey slate roof, top-left corner. Used as: roof, slate roof, house, building.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0049.png",
+      "observed": "Blue-grey slate roof, top edge. Used as: roof, slate roof, house, building.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0050.png",
+      "observed": "Blue-grey slate roof, top-right corner. Used as: roof, slate roof, house, building.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0051.png",
+      "observed": "Blue-grey slate roof with a small grey-framed window in it. Used as: roof window, dormer, slate roof, house.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0052.png",
+      "observed": "Red tiled roof, top-left corner. Used as: red roof, roof, house, building.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0053.png",
+      "observed": "Red tiled roof, top edge. Used as: red roof, roof, house, building.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0054.png",
+      "observed": "Red tiled roof, top-right corner. Used as: red roof, roof, house, building.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0055.png",
+      "observed": "Red tiled roof with a small grey-framed window in it. Used as: roof window, dormer, red roof, house.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0056.png",
+      "observed": "Vertical wooden fence segment. Used as: fence, wooden fence, vertical fence.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0057.png",
+      "observed": "Small wooden cart with a grey wheel. Used as: cart, wheelbarrow, prop, farm.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0058.png",
+      "observed": "Vertical wooden fence segment. Used as: fence, wooden fence, vertical fence.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0059.png",
+      "observed": "Single wooden fence post. Used as: fence post, fence, wooden fence.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0060.png",
+      "observed": "Blue-grey slate roof, bottom-left corner with eave. Used as: roof, slate roof, house, building.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0061.png",
+      "observed": "Blue-grey slate roof, bottom edge with eave. Used as: roof, slate roof, house, building.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0062.png",
+      "observed": "Blue-grey slate roof, bottom-right corner with eave. Used as: roof, slate roof, house, building.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0063.png",
+      "observed": "Blue-grey slate roof with a pointed gable above a brown wall. Used as: roof gable, slate roof, house front, building.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0064.png",
+      "observed": "Red tiled roof, bottom-left corner with eave. Used as: red roof, roof, house, building.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0065.png",
+      "observed": "Red tiled roof, bottom edge with eave. Used as: red roof, roof, house, building.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0066.png",
+      "observed": "Red tiled roof, bottom-right corner with eave. Used as: red roof, roof, house, building.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0067.png",
+      "observed": "Red tiled roof with a pointed gable above a grey wall. Used as: roof gable, red roof, house front, building.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0068.png",
+      "observed": "Wooden fence corner: post with rails going up and right. Used as: fence, fence corner, wooden fence.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0069.png",
+      "observed": "Two short wooden fence posts side by side. Used as: fence, gate posts, fence opening.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0070.png",
+      "observed": "Wooden fence corner: post with rails going up and left. Used as: fence, fence corner, wooden fence.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0071.png",
+      "observed": "Wooden fence post, bottom end of a vertical fence. Used as: fence, fence post, fence end, wooden fence.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0072.png",
+      "observed": "Brown wooden house wall, left edge. Used as: wall, wooden wall, house, building.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0073.png",
+      "observed": "Brown wooden house wall. Used as: wall, wooden wall, house, building.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0074.png",
+      "observed": "Brown wall with an open dark doorway. Used as: doorway, entrance, wooden wall, house.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0075.png",
+      "observed": "Brown wooden house wall, right edge. Used as: wall, wooden wall, house, building.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0076.png",
+      "observed": "Grey stone house wall, left edge. Used as: wall, stone wall, house, building.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0077.png",
+      "observed": "Grey stone house wall. Used as: wall, stone wall, house, building.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0078.png",
+      "observed": "Grey stone wall with an open dark doorway. Used as: doorway, entrance, stone wall, house.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0079.png",
+      "observed": "Grey stone house wall, right edge. Used as: wall, stone wall, house, building.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0080.png",
+      "observed": "Wooden fence, left end of a horizontal rail. Used as: fence, fence end, wooden fence, horizontal fence.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0081.png",
+      "observed": "Wooden fence, horizontal rail. Used as: fence, wooden fence, horizontal fence, rail.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0082.png",
+      "observed": "Wooden fence, right end of a horizontal rail. Used as: fence, fence end, wooden fence, horizontal fence.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0083.png",
+      "observed": "Wooden signpost with lines of text. Used as: sign, signpost, notice board.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0084.png",
+      "observed": "Brown wall with a window. Used as: window, wooden wall, house, building.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0085.png",
+      "observed": "Brown wall with a wooden door, handle on the left. Used as: door, entrance, wooden wall, house.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0086.png",
+      "observed": "Brown wall with a wooden door, handle on the right. Used as: door, entrance, wooden wall, house.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0087.png",
+      "observed": "Brown wall with a wooden door, handle on the left. Used as: door, entrance, wooden wall, house.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0088.png",
+      "observed": "Grey stone wall with a window. Used as: window, stone wall, house, building.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0089.png",
+      "observed": "Grey stone wall with a wooden door, handle on the left. Used as: door, entrance, stone wall, house.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0090.png",
+      "observed": "Grey stone wall with a wooden door, handle on the right. Used as: door, entrance, stone wall, house.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0091.png",
+      "observed": "Grey stone wall with a wooden door, handle on the left. Used as: door, entrance, stone wall, house.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0092.png",
+      "observed": "Low brown peaked roof top at the bottom of the tile, split down the middle. Used as: small roof, hut roof, prop.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0093.png",
+      "observed": "Yellow oval object with an orange pattern. Used as: prop, item.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0094.png",
+      "observed": "Orange-yellow beehive with a dark entrance. Used as: beehive, bees, farm, prop.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0095.png",
+      "observed": "Archery target with red and white rings on a stand. Used as: archery target, target, bullseye, training.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0096.png",
+      "observed": "Light grey castle wall with battlements, top-left corner. Used as: castle wall, battlements, fortress, stone wall.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0097.png",
+      "observed": "Light grey castle wall with battlements along the top edge. Used as: castle wall, battlements, fortress, stone wall.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0098.png",
+      "observed": "Light grey castle wall with battlements, top-right corner. Used as: castle wall, battlements, fortress, stone wall.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0099.png",
+      "observed": "Grey castle wall-top walkway with battlements, left end. Used as: castle wall, battlements, rampart, fortress.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0100.png",
+      "observed": "Grey castle wall-top walkway with battlements on both sides. Used as: castle wall, battlements, rampart, fortress.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0101.png",
+      "observed": "Grey castle wall-top walkway with battlements, right end. Used as: castle wall, battlements, rampart, fortress.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0102.png",
+      "observed": "Grey castle tower top with battlements on all sides. Used as: castle tower, battlements, fortress.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0103.png",
+      "observed": "Grey stone frame around a brown wooden ladder. Used as: ladder, castle window, tower, stone wall.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0104.png",
+      "observed": "Stone well with a brown wooden roof and blue water. Used as: well, water, village, prop.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0105.png",
+      "observed": "Round dark grey bomb with a lit orange fuse. Used as: bomb, explosive, item, weapon.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0106.png",
+      "observed": "Brown wooden log lying on its side. Used as: log, wood, firewood, prop.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0107.png",
+      "observed": "Brown wooden barrel seen from above, open top. Used as: barrel, container, prop.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0108.png",
+      "observed": "Light grey stone floor with a castle wall edge on the left. Used as: stone floor, castle, courtyard, wall edge.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0109.png",
+      "observed": "Plain light grey stone floor. Used as: stone floor, castle, courtyard, paving.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0110.png",
+      "observed": "Light grey stone floor with a castle wall edge on the right. Used as: stone floor, castle, courtyard, wall edge.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0111.png",
+      "observed": "Grey stone with dark curved lines: part of a stone archway. Used as: castle gate, archway, stone wall.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0112.png",
+      "observed": "Grey stone with dark curved lines: part of a stone archway. Used as: castle gate, archway, stone wall.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0113.png",
+      "observed": "Grey stone with dark curved lines: part of a stone archway. Used as: castle gate, archway, stone wall.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0114.png",
+      "observed": "Grey stone with dark curved lines: part of a stone archway. Used as: castle gate, archway, stone wall.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0115.png",
+      "observed": "Pickaxe with a grey head and wooden handle. Used as: pickaxe, tool, mining, item.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0116.png",
+      "observed": "Pitchfork with grey prongs and wooden handle. Used as: pitchfork, farm tool, tool, item.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0117.png",
+      "observed": "Grey key. Used as: key, unlock, item, pickup.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0118.png",
+      "observed": "Wooden bow. Used as: bow, weapon, archery, item.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0119.png",
+      "observed": "Arrow with a grey head and wooden shaft. Used as: arrow, projectile, archery, weapon.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0120.png",
+      "observed": "Light grey castle wall with battlements, bottom-left corner. Used as: castle wall, battlements, fortress, stone wall.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0121.png",
+      "observed": "Light grey castle wall with battlements along the bottom edge. Used as: castle wall, battlements, fortress, stone wall.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0122.png",
+      "observed": "Light grey castle wall with battlements, bottom-right corner. Used as: castle wall, battlements, fortress, stone wall.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0123.png",
+      "observed": "Narrow grey stone pillar on the left side of the tile. Used as: castle wall edge, pillar, stone wall.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0124.png",
+      "observed": "Narrow grey stone pillar on the right side of the tile. Used as: castle wall edge, pillar, stone wall.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0125.png",
+      "observed": "Grey stone wall with a narrow dark window slit. Used as: arrow slit, castle window, stone wall, tower.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0126.png",
+      "observed": "Grey stone brick wall. Used as: stone wall, brick wall, castle, building.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0127.png",
+      "observed": "Axe with a grey blade and wooden handle. Used as: axe, weapon, tool, item.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0128.png",
+      "observed": "Tool with a rounded grey blade, wooden handle and red grip. Used as: shovel, tool, item.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0129.png",
+      "observed": "Tool with an angled grey blade on a wooden handle. Used as: hoe, farm tool, tool, item.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0130.png",
+      "observed": "Brown wooden barrel or bucket, empty, dark inside. Used as: barrel, bucket, container, prop.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    },
+    {
+      "path": "Tiles/tile_0131.png",
+      "observed": "Brown wooden barrel or bucket filled with blue water. Used as: water barrel, bucket, water, prop.",
+      "style": "pixel-art",
+      "model": "claude-code-subagent",
+      "at": "2026-11-06T19:29:31.709Z"
+    }
+  ]
+}

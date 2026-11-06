@@ -258,7 +258,8 @@
       "expect": [
         "*:*key*",
         "platformer-art-pixel:Tiles/tile_0014.png",
-        "platformer-art-pixel:Tiles/tile_0015.png"
+        "platformer-art-pixel:Tiles/tile_0015.png",
+        "tiny-town:Tiles/tile_0117.png"
       ],
       "kind": "lexical"
     },
@@ -2839,7 +2840,21 @@
     {
       "q": "a fence around a farm",
       "expect": [
-        "*:*fence*"
+        "*:*fence*",
+        "tiny-town:Tiles/tile_0044.png",
+        "tiny-town:Tiles/tile_0045.png",
+        "tiny-town:Tiles/tile_0046.png",
+        "tiny-town:Tiles/tile_0047.png",
+        "tiny-town:Tiles/tile_0056.png",
+        "tiny-town:Tiles/tile_0058.png",
+        "tiny-town:Tiles/tile_0059.png",
+        "tiny-town:Tiles/tile_0068.png",
+        "tiny-town:Tiles/tile_0069.png",
+        "tiny-town:Tiles/tile_0070.png",
+        "tiny-town:Tiles/tile_0071.png",
+        "tiny-town:Tiles/tile_0080.png",
+        "tiny-town:Tiles/tile_0081.png",
+        "tiny-town:Tiles/tile_0082.png"
       ],
       "kind": "intent",
       "added": "2026-09-06"

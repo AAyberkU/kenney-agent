@@ -26,6 +26,7 @@ docs/consistency-failures.md
 index/*.db
 index/sheets/
 index/batches/
+index/describe/
 index/*.db-wal
 index/*.db-shm
 

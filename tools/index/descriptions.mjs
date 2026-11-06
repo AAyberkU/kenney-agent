@@ -65,6 +65,8 @@ export async function importDescriptions({ packs = null } = {}) {
     if (packs && !packs.includes(data.pack)) continue
     files++
     for (const a of data.assets) {
+      // An unfilled entry must not blank out a description.
+      if (typeof a.observed !== "string" || !a.observed.trim()) { missing++; continue }
       const r = update.run(a.observed, a.style ?? null, a.model ?? null, a.at ?? null,
         a.audited ? 1 : 0, a.auditedAt ?? null, data.pack, a.path)
       if (r.changes) applied++
@@ -77,7 +79,7 @@ export async function importDescriptions({ packs = null } = {}) {
   rebuildFts(db)
   db.close()
   console.log(`  imported ${applied} descriptions from ${files} packs` +
-    (missing ? `, ${missing} had no matching asset` : ""))
+    (missing ? `, ${missing} had no matching asset or no text` : ""))
   return { applied, missing }
 }
 

@@ -27,6 +27,17 @@ assets -- query the Kenney asset index
                  [--manifest] [--flat]        + a typed manifest
   assets stats                                index summary
 
+audio and description helpers:
+  assets audio   [--packs a,b] [--force]      measure duration, sample rate,
+                 [--concurrency 6]            channels, loudness (ffmpeg)
+  assets sfx-tags                             import Open Game SFX Index tags
+                                              (vendor/open-game-sfx-index)
+  assets describe-sheets <pack>               numbered contact sheets + key
+                 [--undescribed] [--per-sheet 48]  for writing descriptions
+                 [--cols 8] [--cell 128] [--trim]  (index/describe/<pack>/)
+  assets describe-sheets <pack> --apply <f>   numbered descriptions -> merged
+                 [--model m] [--style s]      into descriptions/<pack>.json
+
 local corpus (KenneyAssets, see LOCAL.md):
   assets link                                 junction the local corpus in +
                                               write catalog/catalog.local.json
@@ -44,6 +55,8 @@ search filters:
   --kind <k>        image|audio            (default: image)
   --min-size <n>    minimum width and height in px
   --max-size <n>    maximum width and height in px
+  --min-duration <s> minimum audio length in seconds (needs: assets audio)
+  --max-duration <s> maximum audio length in seconds
   --tileable        only assets whose edges match (needs: assets analyze)
   --described       only assets that carry a description
   --undescribed     only assets that do not -- what still needs a pass
@@ -69,6 +82,7 @@ function cmdSearch(positionals, flags) {
     audited: !!flags.audited,
     atlas: !!flags.atlas,
     minSize: flags["min-size"], maxSize: flags["max-size"],
+    minDuration: flags["min-duration"], maxDuration: flags["max-duration"],
     limit: flags.limit ?? 20,
   }, { total: true })
 
@@ -79,7 +93,8 @@ function cmdSearch(positionals, flags) {
     db.close(); return
   }
   for (const r of rows) {
-    const size = r.width ? `${r.width}x${r.height}` : "-"
+    const size = r.width ? `${r.width}x${r.height}`
+      : r.duration_s != null ? `${r.duration_s.toFixed(2)}s` : "-"
     const bits = [r.role, r.style, r.anim_frame].filter(Boolean).join("/")
     console.log(
       String(r.id).padStart(6) + "  " +
@@ -90,8 +105,11 @@ function cmdSearch(positionals, flags) {
     )
     if (r.observed) console.log(" ".repeat(8) + "↳ " + r.observed.slice(0, 140))
   }
+  const next = (flags.kind ?? "image") === "audio"
+    ? "Next: assets show <id> for loudness and tags, then listen."
+    : "Next: assets sheet <ids> --out sheet.png, then look at it."
   console.log(`
-${rows.length} of ${total.toLocaleString()}. Next: assets sheet <ids> --out sheet.png, then look at it.`)
+${rows.length} of ${total.toLocaleString()}. ${next}`)
   db.close()
 }
 
@@ -102,6 +120,11 @@ function cmdShow(positionals) {
   row.file = assetFile(row.pack, row.path)
   row.keywords = JSON.parse(row.keywords || "[]")
   if (row.top_colors) row.top_colors = JSON.parse(row.top_colors)
+  if (row.sfx_tags) row.sfx_tags = JSON.parse(row.sfx_tags)
+  if (row.kind !== "audio") {
+    for (const k of ["duration_s", "sample_rate", "channels", "loudness_lufs", "peak_db", "mean_db", "audio_at", "sfx_tags"])
+      if (row[k] == null) delete row[k]
+  }
   console.log(JSON.stringify(row, null, 2))
   db.close()
 }
@@ -118,6 +141,8 @@ function cmdStats() {
   console.log(`  atlases  ${one("SELECT count(*) c FROM assets WHERE is_atlas=1").c}`)
   console.log(`tier 1 structural  ${one("SELECT count(*) c FROM assets WHERE unique_colors IS NOT NULL").c} / ${t}`)
   console.log(`tier 2 lexical     ${one("SELECT count(*) c FROM assets WHERE role IS NOT NULL").c} / ${t} have a role`)
+ const audio = one("SELECT count(*) c FROM assets WHERE kind='audio'").c
+  console.log(`audio facts        ${one("SELECT count(*) c FROM assets WHERE kind='audio' AND duration_s IS NOT NULL").c} / ${audio} measured, ${one("SELECT count(*) c FROM assets WHERE sfx_tags IS NOT NULL").c} tagged`)
   console.log(`tier 3 vision      ${one("SELECT count(*) c FROM assets WHERE observed IS NOT NULL").c} / ${t}   (audited: ${one("SELECT count(*) c FROM assets WHERE audited=1").c})`)
   const byModel = db.prepare("SELECT vision_model m, count(*) c FROM assets WHERE observed IS NOT NULL GROUP BY m ORDER BY c DESC").all()
   for (const r of byModel) console.log(`    ${String(r.m ?? "unknown").padEnd(18)} ${r.c}`)
@@ -134,6 +159,7 @@ const { values: flags, positionals } = parseArgs({
     role: { type: "string" }, pack: { type: "string" }, style: { type: "string" },
     kind: { type: "string" }, limit: { type: "string" },
     "min-size": { type: "string" }, "max-size": { type: "string" },
+    "min-duration": { type: "string" }, "max-duration": { type: "string" }, "per-sheet": { type: "string" }, apply: { type: "string" },
     packs: { type: "string" }, out: { type: "string" }, dir: { type: "string" },
     tileable: { type: "boolean" }, atlas: { type: "boolean" },
     described: { type: "boolean" }, undescribed: { type: "boolean" }, audited: { type: "boolean" },
@@ -308,6 +334,37 @@ try {
         const { analyze } = await import("../tools/index/analyze.mjs")
         await analyze({ packs: slugs })
       }
+      break
+    }
+    case "audio": {
+      const { measureAudio } = await import("../tools/index/audio.mjs")
+      await measureAudio({
+        packs: flags.packs ? flags.packs.split(",") : null,
+        force: !!flags.force,
+        concurrency: flags.concurrency ? +flags.concurrency : 6,
+      })
+      break
+    }
+    case "sfx-tags": {
+      const { importSfxTags } = await import("../tools/index/sfx-tags.mjs")
+      await importSfxTags()
+      break
+    }
+    case "describe-sheets": {
+      if (!rest[0]) throw new Error("usage: assets describe-sheets <pack> [--undescribed] [--per-sheet 48]")
+      const { describeSheets, applyNumbered } = await import("../tools/index/describe-sheets.mjs")
+      if (flags.apply) {
+        applyNumbered({ pack: rest[0], file: flags.apply, model: flags.model ?? "claude-code-subagent", style: flags.style ?? null })
+        break
+      }
+      await describeSheets({
+        pack: rest[0],
+        undescribed: !!flags.undescribed,
+        perSheet: flags["per-sheet"] ? +flags["per-sheet"] : 48,
+        cols: flags.cols ? +flags.cols : 8,
+        cell: flags.cell ? +flags.cell : 128,
+        trim: !!flags.trim,
+      })
       break
     }
     case "search": cmdSearch(rest, flags); break

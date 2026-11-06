@@ -94,10 +94,19 @@ export function rebuildFts(db, tiers = { structural: true, vision: true }) {
   db.exec("DELETE FROM assets_fts")
   const rows = db.prepare(`
     SELECT a.id, a.path, a.keywords, a.role, a.anim_frame, a.style, a.observed,
-           a.vision_style, p.tags AS pack_tags, p.name AS pack_name, a.pack
+           a.vision_style, a.sfx_tags, p.tags AS pack_tags, p.name AS pack_name, a.pack
     FROM assets a LEFT JOIN packs p ON p.slug = a.pack
   `).all()
   const ins = db.prepare("INSERT INTO assets_fts(rowid, text) VALUES (?, ?)")
+  // Open Game SFX Index tags (vendored, third-party): category, tags,
+  // use cases and mood words for Kenney sounds.
+  const sfx = (json) => {
+    if (!json) return null
+    try {
+      const t = JSON.parse(json)
+      return [t.category, ...(t.tags ?? []), ...(t.use_cases ?? []), ...(t.mood ?? [])].filter(Boolean).join(" ")
+    } catch { return null }
+  }
   for (const r of rows) {
     const parts = [
       r.pack, r.pack_name,
@@ -106,6 +115,7 @@ export function rebuildFts(db, tiers = { structural: true, vision: true }) {
       r.role, r.anim_frame,
       (JSON.parse(r.pack_tags || "[]")).join(" "),
       tiers.structural ? r.style : null,
+      tiers.structural ? sfx(r.sfx_tags) : null,
       tiers.vision ? r.observed : null,
       tiers.vision ? r.vision_style : null,
     ]

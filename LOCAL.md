@@ -24,6 +24,8 @@ node bin/assets link                # junctions + catalog.local.json
 node bin/assets build               # index (seconds)
 node bin/assets analyze             # structural tier via sharp (minutes)
 node bin/assets descriptions import # committed vision descriptions
+node bin/assets audio               # audio facts via ffprobe/ffmpeg (~30 s)
+node bin/assets sfx-tags            # vendored Open Game SFX Index tags
 node bin/assets eval                # recall@10
 ```
 
@@ -35,13 +37,20 @@ repository, in Ayberk's Brain research notes.
 
 - **Indexed:** 77,910 files (63,930 images, 1,342 audio, the rest 3D models,
   fonts and data) from 256 linked packs.
-- **Analysis:** all images have the structural tier; 6,558 assets carry
-  descriptions.
+- **Analysis:** all images have the structural tier; 6,690 assets carry
+  descriptions (tiny-town's 132 tiles added by hand from contact sheets).
+- **Audio:** all 1,342 sounds measured, 0 failures; 971 have integrated LUFS
+  (the rest are under 0.4 s and keep peak/mean dB only). 744 carry Open Game
+  SFX Index tags.
 - **Catalogued but not local (7):** `mini-shop`,
   `scribble-platformer-expansion`, `skyboxes-space`, `tiny-city`,
   `tiny-factory`, `tower-defense-top-down`, `ui-pack-rpg-expansion`.
 - **Recall@10 on `eval/queries.json`:** 68.8% lexical only, 68.1% with the
   structural tier, 78.9% with descriptions.
+  - Two cases (`key item to unlock door`, `a fence around a farm`) list the
+    tiny-town key and fence tiles as accepted answers. They match the
+    filename globs' intent but not the globs, and without them the
+    semantic tier reads 78.3%.
 
 ## Missing packs
 
@@ -88,3 +97,28 @@ repository, in Ayberk's Brain research notes.
   - Rewritten for this setup: local plus missing search, the missing-pack
     order and credits.
   - References point at slugs that exist.
+  - Reads the game's `assets.manifest.json` before choosing; documents audio
+    facts and the describe-sheets workflow.
+- Audio facts (`tools/index/audio.mjs`, `assets audio`):
+  - New nullable `assets` columns: `duration_s`, `sample_rate`, `channels`,
+    `loudness_lufs`, `peak_db`, `mean_db`, `audio_at`.
+  - ffprobe plus one ffmpeg `volumedetect,ebur128` pass per file.
+  - A failure stays NULL and is retried; it is never stored as zero.
+  - `--min-duration` / `--max-duration` search filters. Durations show in
+    search output.
+- Open Game SFX Index (`tools/index/sfx-tags.mjs`, `assets sfx-tags`):
+  - The Kenney part of upstream `index.json` (MIT, commit `34bbe8b`) is
+    vendored in `vendor/open-game-sfx-index/` with its LICENSE.
+  - `tools/local/vendor-sfx-index.mjs` regenerates it.
+  - Stored in `sfx_tags` (JSON) and fed into the structural FTS tier.
+  - Upstream tags are per pack, not per sound.
+  - Upstream used older music-jingles numbering, so 60 files are re-paired by
+    duration. 9 changed files get family-level tags only.
+  - 32 digital-audio files are newer renders than upstream's (durations
+    differ); they are kept by name.
+- `assets describe-sheets <pack>` writes numbered contact sheets and a key to
+  `index/describe/<pack>/` (ignored). `--apply` merges numbered descriptions
+  into `descriptions/<pack>.json`.
+- `descriptions import` skips entries with empty text.
+- `lib/db.mjs`: a read-only open migrates an older index first, because
+  queries name the added columns.
