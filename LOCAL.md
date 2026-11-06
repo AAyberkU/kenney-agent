@@ -1,0 +1,90 @@
+# Local corpus integration
+
+This branch (`ayberk/local-integration`) runs the index over a local copy of the
+Kenney corpus instead of downloading every pack from kenney.nl.
+
+## Pieces
+
+| Piece | Where | Role |
+| --- | --- | --- |
+| Corpus | `../KenneyAssets` (clone of `eturner58/game-assets`, Kenney All-in-1 v3.7.0) | The files: 2D, UI, icons, audio, 3D as GLB (FBX for the four character packs), sliced tiles |
+| Slug map | `catalog/eturner58-map.json` (committed) | kenney.nl slug -> corpus folder, 256 entries |
+| Extra packs | `catalog/extra-packs.json` (committed, hand-kept) | kenney.nl packs newer than the corpus and the scraped catalog |
+| Local catalog | `catalog/catalog.local.json` (generated, ignored) | Scraped catalog + corpus vision tags + extra packs; what the index reads |
+| Junctions | `assets/experimental/<slug>` (ignored) | Directory junctions into the corpus; nothing is copied |
+| Incoming | `incoming/` (ignored) | Pack zips the user downloads by hand |
+
+Set `KENNEY_ASSETS_DIR` if the corpus is not at `../KenneyAssets`.
+
+## Setup from scratch
+
+```bash
+npm install
+node bin/assets link                # junctions + catalog.local.json
+node bin/assets build               # index (seconds)
+node bin/assets analyze             # structural tier via sharp (minutes)
+node bin/assets descriptions import # committed vision descriptions
+node bin/assets eval                # recall@10
+```
+
+`tools/local/make-map.mjs [--site-map <json>]` regenerates the slug map after
+the corpus gains packs. The site map used on 2026-11-06 lives outside this
+repository, in Ayberk's Brain research notes.
+
+## State on 2026-11-06
+
+- **Indexed:** 77,910 files (63,930 images, 1,342 audio, the rest 3D models,
+  fonts and data) from 256 linked packs.
+- **Analysis:** all images have the structural tier; 6,558 assets carry
+  descriptions.
+- **Catalogued but not local (7):** `mini-shop`,
+  `scribble-platformer-expansion`, `skyboxes-space`, `tiny-city`,
+  `tiny-factory`, `tower-defense-top-down`, `ui-pack-rpg-expansion`.
+- **Recall@10 on `eval/queries.json`:** 68.8% lexical only, 68.1% with the
+  structural tier, 78.9% with descriptions.
+
+## Missing packs
+
+`assets missing [query]` lists catalogued packs with no local copy.
+
+- `assets fetch <slug>` downloads one pack from kenney.nl, then extracts,
+  builds and analyzes it.
+- If that fails, the zip goes into `incoming/` by hand and
+  `assets ingest [--pack <slug>]` does the same from there.
+- A fetched or ingested pack is a real directory. It overrides the junction to
+  the older corpus copy; `assets link` leaves it alone.
+- `removePack` and re-linking only ever unlink junctions. They never delete
+  corpus files.
+
+## Changes from upstream
+
+- `package.json`: removed a `file:` dependency on the author's local
+  worktree (unused, broke `npm install`).
+- `lib/fetch-pack.mjs`:
+  - `extractZip` is shared by fetch and ingest.
+  - The zip-slip check uses a path-separator boundary.
+  - SVG, fonts and Tiled files are kept.
+  - The User-Agent is honest.
+  - Linked packs are unlinked, never deleted.
+- `tools/index/build.mjs`: follows junctions when listing packs.
+- `lib/search.mjs`: the FTS join is a `CROSS JOIN`.
+  - With a plain `JOIN`, SQLite sometimes ran the asset table as the outer
+    loop and re-ran `MATCH` per row: 122 s for one query over 77,910 rows.
+  - Now 10-30 ms. The full 304-case eval runs in about 14 s.
+- Corpus vision tags go into a pack's search text only when kenney.nl gave it
+  none (bundle-only and sliced packs).
+  - Merged into every pack, they measured 78.3% recall@10 against 78.9%
+    without.
+  - They are kept as `corpusTags`, `style` and `perspective` in
+    `catalog.local.json`.
+- `lib/config.mjs`: `catalog.local.json` is preferred when present; adds
+  corpus and incoming paths.
+- `bin/assets`: new commands `link`, `missing`, `fetch`, `ingest`.
+- `descriptions/1-bit-platformer-pack.json`: the legacy `1-bit-platformer`
+  descriptions under the current slug.
+  - `platformer-art-pixel.json` does not match the corpus layout and is not
+    imported.
+- `skills/kenney-assets/`:
+  - Rewritten for this setup: local plus missing search, the missing-pack
+    order and credits.
+  - References point at slugs that exist.

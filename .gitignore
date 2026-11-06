@@ -115,3 +115,7 @@ $RECYCLE.BIN/
 *.msp
 *.lnk
 .sheets/
+
+# === Local corpus integration (LOCAL.md) ===
+catalog/catalog.local.json
+incoming/

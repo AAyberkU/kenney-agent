@@ -37,7 +37,10 @@ function walk(dir, rel, out) {
 function loadAssets(db, only) {
   const root = requireAssetsRoot()
   const dirs = fs.readdirSync(root, { withFileTypes: true })
-    .filter((d) => d.isDirectory() && !d.name.startsWith("."))
+    // Packs may be junctions into the shared corpus (assets link), which
+    // Dirent reports as links, not directories -- follow them.
+    .filter((d) => !d.name.startsWith(".") && (d.isDirectory() ||
+      (d.isSymbolicLink() && fs.statSync(path.join(root, d.name)).isDirectory())))
     .map((d) => d.name)
     .filter((d) => !only || only.includes(d))
     .sort()

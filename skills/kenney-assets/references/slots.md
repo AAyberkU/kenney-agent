@@ -31,10 +31,10 @@ points, not answers — confirm on a contact sheet.
 |------|-----|
 | `new-platformer-pack` | Most complete 2D platformer set; characters, tiles, backgrounds, all described |
 | `abstract-platformer` | Clean flat shapes, full character animation sets |
-| `1-bit-platformer` | Monochrome, opaque filenames — sheet it and look |
+| `1-bit-platformer-pack` | Monochrome, opaque filenames — sheet it and look |
 | `pixel-platformer` | Small-tile pixel art |
 | `input-prompts` | 3,056 controller/key glyphs, fully described |
-| `ui-pack-sci-fi`, `ui-pack-space`, `ui-pack-rpg` | HUD and menu furniture |
+| `ui-pack`, `ui-pack-sci-fi`, `ui-pack-adventure`, `ui-pack-pixel-adventure` | HUD and menu furniture |
 | `crosshair-pack` | 1,205 reticles |
 
 `assets stats` lists what is actually on disk.

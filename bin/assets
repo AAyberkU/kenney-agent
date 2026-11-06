@@ -27,6 +27,16 @@ assets -- query the Kenney asset index
                  [--manifest] [--flat]        + a typed manifest
   assets stats                                index summary
 
+local corpus (KenneyAssets, see LOCAL.md):
+  assets link                                 junction the local corpus in +
+                                              write catalog/catalog.local.json
+  assets missing [query] [--limit n]          catalogued packs with no local
+                                              copy (pack level, with links)
+  assets fetch   <slug>                       download one pack from kenney.nl
+                                              (+ build and analyze it)
+  assets ingest  [--pack <slug>]              add zips dropped into incoming/
+                                              (+ build and analyze them)
+
 search filters:
   --role <r>        character|enemy|tile|background|ui|effect|pickup|weapon|audio
   --pack <slug>     restrict to one pack
@@ -132,7 +142,7 @@ const { values: flags, positionals } = parseArgs({
     suite: { type: "string" }, all: { type: "boolean" }, redo: { type: "boolean" },
     submit: { type: "boolean" }, collect: { type: "string" }, model: { type: "string" },
     "sheets-only": { type: "boolean" }, ingest: { type: "string" }, trim: { type: "boolean" }, to: { type: "string" }, manifest: { type: "boolean" }, flat: { type: "boolean" }, cols: { type: "string" }, cell: { type: "string" }, label: { type: "string" }, validate: { type: "boolean" }, verbose: { type: "boolean" },
-    help: { type: "boolean", short: "h" },
+    help: { type: "boolean", short: "h" }, "dry-run": { type: "boolean" },
   },
 })
 
@@ -253,6 +263,51 @@ try {
       const ids = rest.join(",").split(/[ ,]+/).filter((x) => /^\d+$/.test(x)).map(Number)
       const paths = rest.filter((x) => x.includes(":"))
       markAudited({ ids, paths })
+      break
+    }
+    case "link": {
+      const { link } = await import("../tools/local/link.mjs")
+      const r = link({ dryRun: !!flags["dry-run"] })
+      console.log(`  junctions: ${r.created} created, ${r.kept} kept, ${r.removed} removed, ${r.realDirs} real dirs left alone${r.missingTargets ? `, ${r.missingTargets} targets missing` : ""}`)
+      console.log(`  catalog.local.json: ${r.catalogPacks} packs (${r.localPacks} local, ${r.notLocal} not local)`)
+      console.log("  next: assets build && assets analyze")
+      break
+    }
+    case "missing": {
+      const { missingPacks } = await import("../tools/local/missing.mjs")
+      const r = missingPacks({ query: rest.join(" "), limit: flags.limit ? +flags.limit : 20 })
+      if (flags.json) { console.log(JSON.stringify(r, null, 2)); break }
+      if (!r.packs.length) { console.log("no catalogued pack is missing locally for that query"); break }
+      for (const p of r.packs) {
+        console.log(`  ${p.slug.padEnd(34)} ${String(p.category ?? "-").padEnd(8)} ${p.tags.slice(0, 6).join(", ")}`)
+        console.log(`  ${"".padEnd(34)} ${p.page}${p.previewUrl ? "  preview: " + p.previewUrl : ""}`)
+      }
+      console.log(`
+  ${r.packs.length} of ${r.total} shown`)
+      break
+    }
+    case "fetch":
+    case "ingest": {
+      let slugs = []
+      if (cmd === "fetch") {
+        if (!rest[0]) throw new Error("usage: assets fetch <slug>")
+        const { fetchPack } = await import("../lib/fetch-pack.mjs")
+        const r = await fetchPack(rest[0])
+        console.log(`  ${r.slug}: ${r.files} files, ${(r.bytes / 1048576).toFixed(1)} MB`)
+        slugs = [r.slug]
+      } else {
+        const { ingest } = await import("../tools/local/ingest.mjs")
+        const { dir, results } = await ingest({ pack: flags.pack ?? null })
+        if (!results.length) { console.log(`  no zips in ${dir}`); break }
+        for (const r of results) console.log(r.error ? `  ${r.zip}: FAILED ${r.error}` : `  ${r.zip} -> ${r.slug}: ${r.files} files${r.catalogued ? "" : " (not in catalog: indexed under its own name)"}`)
+        slugs = results.filter((r) => !r.error).map((r) => r.slug)
+      }
+      if (slugs.length) {
+        const { build } = await import("../tools/index/build.mjs")
+        build({ packs: slugs })
+        const { analyze } = await import("../tools/index/analyze.mjs")
+        await analyze({ packs: slugs })
+      }
       break
     }
     case "search": cmdSearch(rest, flags); break

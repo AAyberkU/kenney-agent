@@ -1,0 +1,51 @@
+{
+  "_doc": "kenney.nl packs newer than both the scraped catalog (2026-08-30) and the local corpus (All-in-1 3.7.0). Hand-maintained; merged by `assets link`. Download URLs are the last ones archived by the Wayback Machine and go stale when Kenney updates a pack; a stale URL makes `assets fetch` fail, and the pack is then added by hand through incoming/. Tags are derived from the pack name and series only.",
+  "checked": "2026-11-06",
+  "packs": [
+    {
+      "slug": "tiny-city",
+      "name": "Tiny City",
+      "category": "2D",
+      "series": "Tiny",
+      "tags": ["tiny", "city", "urban", "tiles", "pixel"],
+      "downloadUrl": "https://kenney.nl/media/pages/assets/tiny-city/357bf73846-1791720771/kenney_tiny-city.zip",
+      "released": "2026-10-11"
+    },
+    {
+      "slug": "tiny-factory",
+      "name": "Tiny Factory",
+      "category": "2D",
+      "series": "Tiny",
+      "tags": ["tiny", "factory", "industrial", "tiles", "pixel"],
+      "downloadUrl": "https://kenney.nl/media/pages/assets/tiny-factory/1652277319-1788860879/kenney_tiny-factory.zip",
+      "released": "2026-09-08"
+    },
+    {
+      "slug": "scribble-platformer-expansion",
+      "name": "Scribble Platformer Expansion",
+      "category": "2D",
+      "series": "Scribble",
+      "tags": ["scribble", "platformer", "hand-drawn", "expansion"],
+      "downloadUrl": "https://kenney.nl/media/pages/assets/scribble-platformer-expansion/e28d7ba15c-1787574405/kenney_scribble-platformer-expansion_1.0.zip",
+      "released": "2026-08-24"
+    },
+    {
+      "slug": "skyboxes-space",
+      "name": "Skyboxes Space",
+      "category": "Textures",
+      "series": "Skyboxes",
+      "tags": ["skybox", "space", "stars", "background", "textures"],
+      "downloadUrl": null
+    },
+    {
+      "slug": "mini-shop",
+      "name": "Mini Shop",
+      "category": "3D",
+      "series": "Mini",
+      "tags": ["mini", "shop", "store", "market", "3d", "low-poly"],
+      "downloadUrl": null,
+      "released": "2026-11-03",
+      "note": "Remake that replaces Mini Market; the local corpus has the old Mini Market."
+    }
+  ]
+}

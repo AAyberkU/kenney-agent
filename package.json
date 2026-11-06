@@ -19,8 +19,7 @@
   },
   "dependencies": {
     "jszip": "^3.10.1",
-    "sharp": "^0.35.4",
-    "universal-asset-edge-extractor": "file:../UniversalAssetEdgeExtractor/.claude/worktrees/analyzed-assets-samples-46b9b7"
+    "sharp": "^0.35.4"
   },
   "devDependencies": {
     "@anthropic-ai/sdk": "^0.122.0",

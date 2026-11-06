@@ -47,11 +47,11 @@ assets search "tile"   --style 1-bit
 
 ## When the filename says nothing
 
-Packs like `1-bit-platformer` and `pico-8-platformer` name files
+Packs like `1-bit-platformer-pack` and `pico-8-platformer` name files
 `tile_0000.png`. Filter to the pack, sheet a range, and look:
 
 ```bash
-assets search "tile" --pack 1-bit-platformer --limit 64 --json
+assets search "tile" --pack 1-bit-platformer-pack --limit 64 --json
 assets sheet <ids> --out /tmp/tiles.png --cols 8 --label name
 ```
 
