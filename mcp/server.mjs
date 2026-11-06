@@ -9,6 +9,7 @@ import { z } from "zod"
 import { openDb } from "../lib/db.mjs"
 import { searchAssets } from "../lib/search.mjs"
 import { assetFile, assetsRoot, dbPath } from "../lib/config.mjs"
+import { previewFile } from "../lib/previews.mjs"
 import { catalogPacks, isOnDisk } from "../lib/fetch-pack.mjs"
 import { buildSheet } from "../tools/index/sheet.mjs"
 import { install } from "../tools/index/install.mjs"
@@ -65,6 +66,8 @@ server.registerTool(
       role: z.enum(["character", "enemy", "tile", "background", "ui", "effect", "pickup", "weapon", "audio"]).optional(),
       pack: z.string().optional().describe("Restrict to one pack slug"),
       style: z.enum(["1-bit", "indexed", "pixel-art", "full-color"]).optional(),
+      kind: z.enum(["image", "audio", "other"]).optional()
+        .describe('Default "image". "other" = 3D models (.glb/.gltf/.fbx), fonts and data files; models and fonts show a preview on contact_sheet'),
       tileable: z.boolean().optional().describe("Only assets whose edges genuinely match"),
       described: z.boolean().optional().describe("true = only assets carrying a written description"),
       audited: z.boolean().optional().describe("true = only descriptions someone has checked against the pixels"),
@@ -100,7 +103,8 @@ server.registerTool(
     description:
       "Composite up to 64 assets into a single labelled grid image and return it, so you can " +
       "see what they actually look like before committing. This is the step that makes the " +
-      "index trustworthy: search narrows, looking decides.",
+      "index trustworthy: search narrows, looking decides. 3D models and fonts are drawn from " +
+      "their preview (a render or a font specimen); the id still refers to the model or font file.",
     inputSchema: {
       ids: z.array(z.number()).min(1).max(64).describe("Asset ids from search_assets"),
       columns: z.number().min(1).max(12).optional(),
@@ -144,6 +148,7 @@ server.registerTool(
     db.close()
     if (!row) return { content: [{ type: "text", text: `No asset with id ${id}.` }], isError: true }
     row.file = assetFile(row.pack, row.path)
+    if (row.preview_path) row.preview_file = previewFile(row.preview_path)
     for (const k of ["keywords", "top_colors"]) {
       if (row[k]) { try { row[k] = JSON.parse(row[k]) } catch { /* leave as stored */ } }
     }

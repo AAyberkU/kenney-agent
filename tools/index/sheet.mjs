@@ -3,6 +3,7 @@ import path from "node:path"
 import sharp from "sharp"
 import { openDb } from "../../lib/db.mjs"
 import { assetFile } from "../../lib/config.mjs"
+import { previewFile } from "../../lib/previews.mjs"
 
 /**
  * Composite a set of assets into one labelled contact sheet.
@@ -22,10 +23,26 @@ function escapeXml(s) {
           .replace(/"/g, "&quot;").replace(/'/g, "&apos;")
 }
 
+/**
+ * What to draw for one asset. Images are drawn from themselves; models and
+ * fonts from their preview_path (lib/previews.mjs); SVGs are rasterised.
+ * `smooth` marks rendered previews, which are downscaled with a smooth kernel
+ * (nearest-neighbour is for pixel art) and trimmed of their empty margins.
+ */
+function sourceFor(r) {
+  const file = assetFile(r.pack, r.path)
+  const kind = r.kind ?? "image"
+  if (kind === "image") return { file }
+  const pv = previewFile(r.preview_path)
+  if (pv) return { file: pv, smooth: true }
+  if ((r.ext ?? path.extname(r.path).toLowerCase()) === ".svg") return { file, smooth: true, svg: true }
+  return null
+}
+
 export async function buildSheet({ ids, rows: rowsIn, out, cols = 8, cell = 128, label = "id", trim = false }) {
   const db = rowsIn ? null : openDb({ readonly: true })
   const rows = rowsIn ?? ids.map((id) =>
-    db.prepare("SELECT id, pack, path, width, height FROM assets WHERE id=?").get(id)).filter(Boolean)
+    db.prepare("SELECT id, pack, path, kind, ext, width, height, preview_path FROM assets WHERE id=?").get(id)).filter(Boolean)
   if (db) db.close()
   if (!rows.length) throw new Error("no assets to composite")
 
@@ -42,19 +59,27 @@ export async function buildSheet({ ids, rows: rowsIn, out, cols = 8, cell = 128,
     const r = rows[i]
     const cx = (i % cols2) * cell
     const cy = Math.floor(i / cols2) * cell
-    const file = assetFile(r.pack, r.path)
-    try {
+    const src0 = sourceFor(r)
+    if (!src0) {
+      // Nothing to show (a data file, or a model nobody has rendered yet):
+      // say so in the cell rather than leaving a silent gap.
+      labels.push(
+        `<text x="${cx + cell / 2}" y="${cy + cell / 2}" font-family="monospace" font-size="11" ` +
+        `fill="#d8d8de" text-anchor="middle">${escapeXml((r.ext ?? path.extname(r.path)) + " - no preview")}</text>`)
+    } else try {
+      const { file, smooth, svg } = src0
       // Isometric model renders sit small inside a large transparent canvas;
       // without trimming they arrive a few pixels wide and unidentifiable.
-      let src = sharp(file)
-      if (trim) {
+      let src = svg ? sharp(file, { density: 144 }) : sharp(file)
+      if (trim || smooth) {
         try { src = sharp(await src.trim({ threshold: 1 }).toBuffer()) }
-        catch { src = sharp(file) }   // fully-uniform image: nothing to trim
+        catch { src = svg ? sharp(file, { density: 144 }) : sharp(file) }   // fully-uniform image: nothing to trim
       }
       // Nearest-neighbour: enlarging pixel art with a smooth kernel destroys
-      // exactly the detail a viewer is being asked to judge.
+      // exactly the detail a viewer is being asked to judge. Rendered
+      // previews are not pixel art and alias badly with it.
       const buf = await src
-        .resize(art, art, { fit: "contain", kernel: "nearest",
+        .resize(art, art, { fit: "contain", kernel: smooth ? "lanczos3" : "nearest",
                             background: { r: 0, g: 0, b: 0, alpha: 0 } })
         .png()
         .toBuffer()

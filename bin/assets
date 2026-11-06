@@ -2,6 +2,7 @@
 import { parseArgs } from "node:util"
 import { openDb, getMeta } from "../lib/db.mjs"
 import { assetFile, assetsRoot, dbPath } from "../lib/config.mjs"
+import { previewFile } from "../lib/previews.mjs"
 import { searchAssets } from "../lib/search.mjs"
 
 const USAGE = `
@@ -13,7 +14,11 @@ assets -- query the Kenney asset index
   assets analyze [--packs a,b] [--force]      structural pass (sharp)
   assets render  <pack> [--steps N]           render cardinal views of 3D
                  [--size 512] [--elevation D]  models (needs Blender)
-  assets sheet   <ids> --out f.png            composite a contact sheet
+  assets render-previews [--packs a,b]        draw a preview for every 3D model
+                 [--force] [--only models|fonts]  that lacks one (headless three.js)
+                 [--concurrency 4]            and a specimen for every font
+  assets sheet   <ids> --out f.png            composite a contact sheet (models
+                                              and fonts show their preview)
   assets search  <query> [filters]            find candidate assets
   assets show    <id>                         full record for one asset
   assets migrate-vision [--dir <path>]        import legacy Codex descriptions
@@ -41,7 +46,8 @@ search filters:
   --role <r>        character|enemy|tile|background|ui|effect|pickup|weapon|audio
   --pack <slug>     restrict to one pack
   --style <s>       1-bit|indexed|pixel-art|full-color
-  --kind <k>        image|audio            (default: image)
+  --kind <k>        image|audio|other      (default: image; other = 3D
+                    models, fonts, data -- sheets show their previews)
   --min-size <n>    minimum width and height in px
   --max-size <n>    maximum width and height in px
   --tileable        only assets whose edges match (needs: assets analyze)
@@ -100,6 +106,7 @@ function cmdShow(positionals) {
   const row = db.prepare("SELECT * FROM assets WHERE id = ?").get(+positionals[0])
   if (!row) { console.error(`no asset with id ${positionals[0]}`); process.exitCode = 1; db.close(); return }
   row.file = assetFile(row.pack, row.path)
+  if (row.preview_path) row.preview_file = previewFile(row.preview_path)
   row.keywords = JSON.parse(row.keywords || "[]")
   if (row.top_colors) row.top_colors = JSON.parse(row.top_colors)
   console.log(JSON.stringify(row, null, 2))
@@ -116,6 +123,9 @@ function cmdStats() {
   console.log(`packs      ${one("SELECT count(*) c FROM packs").c} cataloged, ${one("SELECT count(*) c FROM packs WHERE installed=1").c} on disk`)
   console.log(`assets     ${t}  (${one("SELECT count(*) c FROM assets WHERE kind='image'").c} image, ${one("SELECT count(*) c FROM assets WHERE kind='audio'").c} audio)`)
   console.log(`  atlases  ${one("SELECT count(*) c FROM assets WHERE is_atlas=1").c}`)
+  const models = "ext IN ('.glb','.gltf','.fbx','.obj')", fonts = "ext IN ('.ttf','.otf')"
+  console.log(`previews   ${one(`SELECT count(*) c FROM assets WHERE ${models} AND preview_path IS NOT NULL`).c} / ${one(`SELECT count(*) c FROM assets WHERE ${models}`).c} 3D models, ` +
+    `${one(`SELECT count(*) c FROM assets WHERE ${fonts} AND preview_path IS NOT NULL`).c} / ${one(`SELECT count(*) c FROM assets WHERE ${fonts}`).c} fonts`)
   console.log(`tier 1 structural  ${one("SELECT count(*) c FROM assets WHERE unique_colors IS NOT NULL").c} / ${t}`)
   console.log(`tier 2 lexical     ${one("SELECT count(*) c FROM assets WHERE role IS NOT NULL").c} / ${t} have a role`)
   console.log(`tier 3 vision      ${one("SELECT count(*) c FROM assets WHERE observed IS NOT NULL").c} / ${t}   (audited: ${one("SELECT count(*) c FROM assets WHERE audited=1").c})`)
@@ -142,7 +152,7 @@ const { values: flags, positionals } = parseArgs({
     suite: { type: "string" }, all: { type: "boolean" }, redo: { type: "boolean" },
     submit: { type: "boolean" }, collect: { type: "string" }, model: { type: "string" },
     "sheets-only": { type: "boolean" }, ingest: { type: "string" }, trim: { type: "boolean" }, to: { type: "string" }, manifest: { type: "boolean" }, flat: { type: "boolean" }, cols: { type: "string" }, cell: { type: "string" }, label: { type: "string" }, validate: { type: "boolean" }, verbose: { type: "boolean" },
-    help: { type: "boolean", short: "h" }, "dry-run": { type: "boolean" },
+    help: { type: "boolean", short: "h" }, "dry-run": { type: "boolean" }, only: { type: "string" },
   },
 })
 
@@ -192,6 +202,27 @@ try {
         trim: !!flags.trim,
       })
       console.log(`  ${r.out}  ${r.count} sprites  ${r.width}x${r.height}`)
+      break
+    }
+    case "render-previews": {
+      const packs = flags.packs ? flags.packs.split(",") : null
+      const only = flags.only ?? null
+      if (only !== "fonts") {
+        const { renderModelPreviews } = await import("../tools/render/previews.mjs")
+        const r = await renderModelPreviews({
+          packs, force: !!flags.force,
+          concurrency: flags.concurrency ? +flags.concurrency : 4,
+          limit: flags.limit ? +flags.limit : 0,
+        })
+        console.log(`  models: ${r.after}/${r.total} have a preview (was ${r.before}); ` +
+          `${r.rendered} rendered in ${r.seconds}s, ${r.reused} reused, ${r.failed} failed` +
+          (r.warnings ? `, ${r.warnings} rendered with files that failed to load` : ""))
+        if (r.failed || r.warnings) console.log(`  details: ${r.report}`)
+      }
+      if (only !== "models") {
+        const { renderFontSpecimens } = await import("../tools/render/fonts.mjs")
+        await renderFontSpecimens({ packs, force: !!flags.force })
+      }
       break
     }
     case "install": {

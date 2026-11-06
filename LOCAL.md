@@ -24,6 +24,7 @@ node bin/assets link                # junctions + catalog.local.json
 node bin/assets build               # index (seconds)
 node bin/assets analyze             # structural tier via sharp (minutes)
 node bin/assets descriptions import # committed vision descriptions
+node bin/assets render-previews     # 3D renders + font specimens (~1.5 min)
 node bin/assets eval                # recall@10
 ```
 
@@ -42,6 +43,10 @@ repository, in Ayberk's Brain research notes.
   `tiny-factory`, `tower-defense-top-down`, `ui-pack-rpg-expansion`.
 - **Recall@10 on `eval/queries.json`:** 68.8% lexical only, 68.1% with the
   structural tier, 78.9% with descriptions.
+- **Previews:** all 5,282 3D model files (.glb/.gltf/.fbx/.obj) have one:
+  3,836 from Kenney's own renders in the corpus, 1,446 rendered locally in
+  79 s with no failures. All 56 fonts have a specimen; 34 are icon fonts
+  (Input Prompts), 19 lack `ĞİŞğış` and 3 lack every Turkish letter.
 
 ## Missing packs
 
@@ -88,3 +93,35 @@ repository, in Ayberk's Brain research notes.
   - Rewritten for this setup: local plus missing search, the missing-pack
     order and credits.
   - References point at slugs that exist.
+- Previews for non-image assets (`lib/previews.mjs`, `tools/render/`):
+  - New nullable columns on `assets`, added by `migrate()`: `preview_path`
+    (an image that shows the asset) and `glyphs_missing` (fonts: specimen
+    characters without a glyph, `""` when none).
+  - `preview_path` is `assets/experimental/<pack>/<path>` for a corpus image
+    (resolved through `assetsRoot()`) or `assets/renders/...` for a generated
+    one (this checkout first, then the main checkout).
+  - Corpus previews: a same-name PNG in the pack (`Previews/`, `Isometric/`,
+    `Sprites/Render/`; silhouettes last, `Textures/` never), else an angle
+    render `<name>_SE.png` (then SW, NE, NW). `assets build` relinks them, and
+    any existing renders, every time.
+  - `assets render-previews [--packs a,b] [--force] [--only models|fonts]
+    [--concurrency 4]`: renders only models without a preview and is
+    resumable (existing PNGs are linked, not redrawn). Failures and texture
+    load errors go to `assets/renders/failures.json`.
+  - Models: Playwright 1.64.1 (Chromium 1248 from the local cache, SwiftShader
+    WebGL) + three.js 0.186.1 GLTF/FBX/OBJ loaders. A loopback HTTP server
+    serves the page, three.js and the corpus; every other request is blocked.
+    Orthographic three-quarter view (azimuth 45, elevation 30), auto-framed,
+    256x256 transparent PNG at `assets/renders/<pack>/<model path>.png`.
+  - Animated-character FBX packs get a skin from the pack's `Skins/` folder
+    (gender from the file name, `casual`/`human` first; animal parts take
+    `Skins/Animals/`); other accessories keep their own colours. Animation
+    files are drawn posed at 30% of their clip.
+  - Fonts: opentype.js 2.0.0 glyph outlines to SVG, rasterised by sharp, at
+    `assets/renders/fonts/<pack>/<font path>.png` (512x256). Missing glyphs are
+    red boxes and listed. Icon fonts show their first 24 glyphs.
+  - `assets sheet` and the MCP `contact_sheet` share `buildSheet`, which draws
+    models and fonts from `preview_path`, rasterises SVGs, and labels cells
+    with nothing to show. MCP `search_assets` gained `kind`; `show` and
+    `get_asset` print `preview_file`; `stats` counts previews.
+  - `assets/renders/` is gitignored.

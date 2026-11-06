@@ -50,6 +50,12 @@ Below, `assets` stands for that command.
    assets sheet 1011 1012 1013 1014 --out <tmp>/candidates.png
    ```
 
+   3D models and fonts show on sheets too: a model is drawn from Kenney's own
+   preview render or a local three.js render, a font as a specimen that marks
+   missing glyphs (most Kenney fonts lack `Ğ İ Ş ğ ı ş`). The id still means
+   the model or font file, so `install` copies that file, not the picture.
+   `assets show <id>` gives `preview_path`, and for fonts `glyphs_missing`.
+
    For a missing pack, look at its preview image before choosing it. If you
    cannot open the preview, judge it by name and tags.
 
@@ -98,7 +104,8 @@ Say which pack you picked and why, in one line.
 `--limit` (default 20) · `--json` · `--atlas` (include sprite sheets)
 
 Other commands: `assets show <id>` (full record), `assets stats` (what is
-indexed), `assets link` (re-link the corpus after it changes, then
+indexed), `assets render-previews` (render previews for new models and fonts
+after a pack is added), `assets link` (re-link the corpus after it changes, then
 `assets build && assets analyze`).
 
 ## What to trust

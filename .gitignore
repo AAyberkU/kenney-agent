@@ -119,3 +119,5 @@ $RECYCLE.BIN/
 # === Local corpus integration (LOCAL.md) ===
 catalog/catalog.local.json
 incoming/
+# Model renders and font specimens (assets render-previews)
+assets/renders/
