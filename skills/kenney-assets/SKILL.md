@@ -11,6 +11,10 @@ the index knows every file's size, role, style and, for some packs, a written
 description. Packs that are catalogued but not on disk are known at pack level
 only: name, category, tags and kenney.nl links.
 
+**PuzzlePanic games:** the Puzzle Factory's
+`C:\Brain\workspace\PuzzlePanic\.kilo\skill\puzzle-factory\references\audiovisual.md`
+("Asset survey", "Kenney Assets") overrides this skill where they differ.
+
 **Do not browse the corpus by hand.** Listing directories burns context and
 filenames lie: a quarter of them (`tile_0147.png`) say nothing. Query the index.
 
@@ -167,8 +171,8 @@ unless a description says so or you saw it on a sheet.
 
 All Kenney game assets are CC0: free for commercial use, attribution optional.
 
-- Add `Art by Kenney (www.kenney.nl), CC0` to the game's credits anyway, plus
-  any co-author named in the pack's `License.txt`.
+- Credits are optional. PuzzlePanic games show none (operator, 2026-11-07);
+  elsewhere, follow the game's own rule.
 - Flag these to the user before shipping:
   - Input Prompts packs: console glyphs are third-party trademarks.
   - Kenney Fonts: the TTF metadata says CC BY-SA 3.0, which contradicts its
