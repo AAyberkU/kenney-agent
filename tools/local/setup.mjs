@@ -227,16 +227,16 @@ export async function setup(opts = {}) {
   if (opts.buildLocally) {
     await buildIndexLocally()
   } else {
-    const { build } = await import("../index/build.mjs")
     const fresh = unindexedPacks()
-    // build() also refreshes the pack table from the catalog link just wrote.
-    build({ packs: fresh.length ? fresh : ["__none__"] })
     if (fresh.length) {
       log(`  indexing ${fresh.length} pack(s) the index lacks: ${fresh.join(", ")}`)
+      const { build } = await import("../index/build.mjs")
+      build({ packs: fresh })
       const { analyze } = await import("../index/analyze.mjs")
       await analyze({ packs: fresh })
+      log("  (3D previews for them: npx playwright install chromium, then assets render-previews)")
     } else {
-      log("  none")
+      log("  none: every linked pack is indexed")
     }
   }
 

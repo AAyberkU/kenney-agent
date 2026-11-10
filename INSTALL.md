@@ -29,8 +29,8 @@ cd ~/kenney-agent
 npm install
 ```
 
-On Windows, if `npm install` fails while building `sharp`, run it again; if it
-keeps failing, show the user the error.
+Warnings about install scripts not being approved (esbuild) are fine: only
+the optional web app uses it. If `npm install` fails, show the user the error.
 
 ## 4. Run setup
 
