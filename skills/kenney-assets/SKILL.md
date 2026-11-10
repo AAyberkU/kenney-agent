@@ -13,8 +13,8 @@ knows every file's size, role, style and, for many packs, a written
 description. Packs that are catalogued but not on disk are known at pack level
 only: name, category, tags and kenney.nl links.
 
-If that path is still a placeholder in double braces, this copy was not
-installed by setup: run `node bin/assets setup` in the kenney-agent checkout.
+`assets setup` wrote this copy and fills in that path; re-run it after
+updating kenney-agent.
 
 **Do not browse the corpus by hand.** Listing directories burns context and
 filenames lie: a quarter of them (`tile_0147.png`) say nothing. Query the index.
@@ -35,7 +35,9 @@ Below, `assets` stands for that command.
    by `assets install`). It lists the packs, sizes and styles the game already
    uses; choose new assets that keep that look.
 
-1. **Search the local files** for what the game needs:
+1. **Search the local files** for what the game needs. Start with plain
+   words; add `--role` only to narrow a long list, since roles are guessed
+   from file names and miss things (some coins are tagged `tile` or `ui`):
 
    ```bash
    assets search "side-view player walk cycle" --role character --limit 20

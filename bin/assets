@@ -1,9 +1,18 @@
 #!/usr/bin/env node
 import { parseArgs } from "node:util"
-import { openDb, getMeta } from "../lib/db.mjs"
-import { assetFile, assetsRoot, dbPath } from "../lib/config.mjs"
-import { previewFile } from "../lib/previews.mjs"
-import { searchAssets } from "../lib/search.mjs"
+
+// node:sqlite prints an ExperimentalWarning on every run; agents read every
+// line of output, so drop that one. The modules that load node:sqlite are
+// imported dynamically below, after this listener is in place.
+process.removeAllListeners("warning")
+process.on("warning", (w) => {
+  if (w.name !== "ExperimentalWarning") console.warn(`${w.name}: ${w.message}`)
+})
+
+const { openDb, getMeta } = await import("../lib/db.mjs")
+const { assetFile, assetsRoot, dbPath } = await import("../lib/config.mjs")
+const { previewFile } = await import("../lib/previews.mjs")
+const { searchAssets } = await import("../lib/search.mjs")
 
 const USAGE = `
 assets -- query the Kenney asset index (kenney-agent)

@@ -27,13 +27,14 @@ npm install
 node bin/assets setup
 ```
 
-`setup` clones the asset corpus (about 1 GB on disk), downloads the prebuilt
+`setup` clones the asset corpus (78,000 files, about 1 GB), downloads the prebuilt
 index from the latest release (about 20 MB), links everything, and installs
 the `kenney-assets` skill into `~/.claude/skills`. For another agent, pass the
 folder it loads skills from: `node bin/assets setup --skill-dir <folder>`.
 Start a new agent session afterwards so the skill loads.
 
-**Needs:** Node.js 22.13 or newer, git, about 1.2 GB of disk.
+**Needs:** Node.js 22.13 or newer, git, about 1.2 GB of disk. Setup takes
+about 4 minutes, mostly cloning the corpus.
 **Optional:** ffmpeg (audio facts for packs you add yourself), Playwright
 Chromium (3D previews for packs you add yourself). The release index already
 has both for every pack in the corpus.

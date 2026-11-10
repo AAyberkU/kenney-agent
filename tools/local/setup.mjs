@@ -73,8 +73,10 @@ function ensureCorpus({ corpus, corpusUrl, update }) {
   }
   if (!have("git")) throw new Error("git is not installed; install it, or clone the corpus yourself and pass --corpus <path>")
   log(`  cloning ${corpusUrl} -> ${dir}`)
-  log("  (about 700 MB, 78,000 files; this is the slow step)")
-  run("git", ["-c", "core.longpaths=true", "clone", "--depth", "1", corpusUrl, dir])
+  log("  (78,000 files, about 1 GB on disk; this is the slow step, often 3-5 minutes)")
+  // Progress lines flood a non-interactive agent shell; stay quiet there.
+  const quiet = process.stdout.isTTY ? [] : ["--quiet"]
+  run("git", ["-c", "core.longpaths=true", "clone", "--depth", "1", ...quiet, corpusUrl, dir])
   if (process.platform === "win32") run("git", ["-C", dir, "config", "core.longpaths", "true"])
   return dir
 }

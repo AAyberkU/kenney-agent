@@ -29,13 +29,18 @@ cd ~/kenney-agent
 npm install
 ```
 
-Warnings about install scripts not being approved (esbuild) are fine: only
-the optional web app uses it. If `npm install` fails, show the user the error.
+Warnings about install scripts not being approved (esbuild) and `npm audit`
+vulnerability counts are fine: they come from development tools for the
+optional web app. If `npm install` fails, show the user the error.
 
 ## 4. Run setup
 
-Setup clones the asset corpus (the slow part: about 700 MB), downloads the
-prebuilt index, links the packs, and installs the skill. It is safe to re-run.
+Setup clones the asset corpus (78,000 files, about 1 GB on disk), downloads
+the prebuilt index (about 20 MB), links the packs, and installs the skill.
+**It takes about 4 minutes**, mostly the clone, and prints little while
+cloning: run it with your longest command timeout or in the background and
+wait for it to finish. It is safe to re-run; a re-run continues where it
+stopped.
 
 - **Claude Code:** the default installs the skill into `~/.claude/skills`.
 
@@ -67,7 +72,8 @@ node bin/assets stats
 node bin/assets search "red roof house" --limit 5
 ```
 
-`stats` should report about 77,900 assets in 256 packs, and the search should
+`stats` should report about 77,900 assets and `263 cataloged, 256 on disk`
+packs (the other 7 are newer packs known by name only), and the search should
 list Tiny Town tiles.
 
 ## 6. Tell the user
