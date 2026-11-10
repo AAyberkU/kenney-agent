@@ -1,163 +1,146 @@
-# Universal Asset Edge Extractor
+# kenney-agent
 
-A queryable index over ~59,000 CC0 game sprites from [Kenney.nl](https://kenney.nl),
-built so an agent can go from "I need a player walk cycle" to files on disk in
-three commands.
+Give your coding agent all of [Kenney](https://kenney.nl)'s free game assets,
+searchable. About 78,000 files (2D sprites, tiles, UI, icons, 3D models,
+sound effects, music, fonts) across 256 packs, indexed so an agent can go from
+"I need a side-view player walk cycle" to files in your game in three
+commands, looking at the candidates before it picks.
 
-## Why an index
+> Unofficial. This project is not made or endorsed by Kenney. All the assets
+> are Kenney's work, released as CC0. If they help you,
+> [support Kenney](https://kenney.nl/donate).
 
-Kenney ships 59,012 PNGs across 223 packs. An agent cannot look at all of them,
-and filenames only sometimes help — roughly a third of them (`tile_0147.png`)
-say nothing at all. Browsing the corpus by hand burns context and misses things.
+## Install
 
-So the index does not try to be a substitute for looking. It produces a
-**shortlist**, and whoever asked confirms by eye:
+Tell your agent:
+
+```text
+Install https://github.com/AAyberkU/kenney-agent
+```
+
+It reads [INSTALL.md](INSTALL.md) and does the rest. By hand:
 
 ```bash
-assets search "side-view player walk cycle" --role character --limit 20
-assets sheet 1011 1012 1013 1014 --out /tmp/candidates.png   # then look at it
-assets install 1011 1012 1013 --to ./src/assets --manifest
+git clone https://github.com/AAyberkU/kenney-agent
+cd kenney-agent
+npm install
+node bin/assets setup
 ```
 
-Recall is what matters; precision gets fixed for free at the last step.
+`setup` clones the asset corpus (about 1 GB on disk), downloads the prebuilt
+index from the latest release (about 20 MB), links everything, and installs
+the `kenney-assets` skill into `~/.claude/skills`. For another agent, pass the
+folder it loads skills from: `node bin/assets setup --skill-dir <folder>`.
+Start a new agent session afterwards so the skill loads.
 
-## Enrichment tiers
+**Needs:** Node.js 22.13 or newer, git, about 1.2 GB of disk.
+**Optional:** ffmpeg (audio facts for packs you add yourself), Playwright
+Chromium (3D previews for packs you add yourself). The release index already
+has both for every pack in the corpus.
 
-One SQLite database, one row per asset, columns filled by successive passes.
+## What your agent does with it
 
-| Tier | Source | Coverage |
-|------|--------|----------|
-| Inventory | filesystem walk + image headers | 61,005 files |
-| Structural | decoded pixels via sharp — colours, style, tileability, symmetry, alpha | 59,656 images |
-| Lexical | filename + parent directory heuristics | 37,272 have a role (61%) |
-| Semantic | per-sprite descriptions | 7,458 (13%) |
-
-Tiers are joined on `(pack, path)`, and every semantic claim records which
-model made it and when.
-
-## Does it work?
-
-`assets eval` measures recall@10 against 69 hand-labeled queries and reports
-each tier's contribution separately. Current baseline:
-
-| tier | lexical cases | semantic cases |
-|------|---------------|----------------|
-| lexical only | 93% | 0% |
-| + structural | 95% | 0% |
-| + semantic | 95% | 60% |
-
-"Semantic" cases are scoped to a pack whose files are named `tile_0000.png` …
-`tile_0195.png`, so filename matching cannot answer them at all. That split is
-the point: it is what shows whether an enrichment tier is worth its cost, and
-it is why the remaining vision work targets the 31% of images whose filenames
-are opaque rather than the whole corpus.
-
-See [eval/README.md](eval/README.md), including a note on how an earlier
-version of this suite reported the opposite conclusion.
-
-## The app
+The skill teaches this loop:
 
 ```bash
-npm run dev
+assets search "side-view player walk cycle" --role character   # shortlist
+assets missing "side-view player walk cycle"                   # newer packs not on disk
+assets sheet 1011 1012 1013 1014 --out candidates.png          # look at them
+assets install 1011 1012 1013 --to ./assets/kenney --manifest  # copy into the game
 ```
 
-Two views over the same index.
+- **Search** runs over a SQLite full-text index in 10-30 ms. Filters: role
+  (character, tile, ui, pickup...), style (pixel-art, 1-bit...), size,
+  tileable edges, audio duration, 3D models and fonts.
+- **Contact sheets** put candidates in one numbered image, so the agent picks
+  by looking instead of trusting file names. A quarter of Kenney's file names
+  (`tile_0147.png`) say nothing. 3D models show a render, fonts a specimen.
+- **Install** copies the files with everything they reference (glTF buffers,
+  textures, `.mtl` files) and writes `assets.manifest.json`, so later picks
+  keep the same look.
+- **Missing packs** that are newer than the corpus are known by name, tags and
+  link. The agent downloads one from kenney.nl when it is clearly better; if
+  that fails, it asks you to download the zip and drops it in `incoming/`.
 
-**Packs** — all 212 packs with their real state: on disk, how many files
-indexed, what fraction is described. Install downloads, extracts, indexes and
-analyzes the pack server-side, so the moment it finishes it is searchable.
-Remove deletes it from disk and the index.
+## What is indexed
 
-**Assets** — search every indexed sprite by text, role, style, pack, or
-whether its edges actually tile. Results are the real images, served from the
-corpus on a transparency checkerboard. Clicking one shows its description,
-measured metadata, dominant colours, and the CLI line to install it.
+| | |
+| --- | --- |
+| Files | 77,910 in 256 packs (Kenney All-in-1 v3.7.0 content) |
+| Images | 63,930, measured from the pixels: size, colours, style, tileability, alpha |
+| Audio | 1,342 sounds with duration, sample rate, channels, loudness; 744 with tags |
+| 3D models | 5,282, every one with a preview picture |
+| Fonts | 56, each with a specimen that marks missing glyphs |
+| Descriptions | 6,690 assets with a written description of what they show |
+| Search quality | 78.9% recall@10 on a 304-query evaluation (`assets eval`) |
 
-Searching *"health pickup heart"* returns `tile_0040.png`, `tile_0041.png`
-and `tile_0042.png` in the top five. Those filenames contain no such word;
-they are findable only because they carry descriptions. That is what the
-enrichment tiers are for.
+## Missing packs
 
-The app needs `npm run dev` — a browser cannot write to the corpus, so
-installing runs on the dev server. A static build browses nothing.
+These Kenney packs are not in the corpus yet. The agent still knows them and
+can download them on demand, but having them in the corpus is better for
+everyone:
 
-## Using it from another agent (MCP)
+- [Tiny City](https://kenney.nl/assets/tiny-city)
+- [Mini Shop](https://kenney.nl/assets/mini-shop) (the corpus has the older Mini Market)
+- [Tiny Factory](https://kenney.nl/assets/tiny-factory)
+- [Scribble Platformer Expansion](https://kenney.nl/assets/scribble-platformer-expansion)
+- [Skyboxes Space](https://kenney.nl/assets/skyboxes-space)
+- [Tower Defense (Top-Down)](https://kenney.nl/assets/tower-defense-top-down)
+- [UI Pack: RPG Expansion](https://kenney.nl/assets/ui-pack-rpg-expansion)
 
-`mcp/server.mjs` exposes the index over the Model Context Protocol, so any MCP
-client can use it. A project-scoped `.mcp.json` is included, so a client
-opened in this directory picks it up with no setup.
+Mini Skate, City Kit Industrial and City Kit Roads also had updates that the
+corpus does not have. **PRs welcome** at
+[AAyberkU/game-assets](https://github.com/AAyberkU/game-assets): see its
+CONTRIBUTING.md. No change is needed here: `assets setup --update` picks up
+new pack folders by themselves.
 
-| tool | does |
-|------|------|
-| `search_assets` | find candidates by description, with the same filters as the CLI |
-| `contact_sheet` | composite up to 64 assets into one labelled image **and return it** |
-| `get_asset` | full record for one asset, including who described it |
-| `install_assets` | copy chosen assets into a directory, optionally with a manifest |
-| `list_packs` | every pack, and whether it is downloaded |
-| `index_stats` | coverage per tier, so a caller knows how much to trust a result |
+## Platforms
 
-`contact_sheet` is the reason this is worth exposing over MCP at all. MCP tools
-may return images, so a client can run the loop the whole project is built
-around — narrow 59,000 sprites to twenty by search, then *look* at them and
-choose. Without that step it would only be a worse `ls`.
+Built and tested on Windows. macOS and Linux should work (packs are linked
+with symlinks instead of junctions there) but have not been tested yet.
+Reports and PRs are welcome.
 
-Every tool reads through `lib/search.mjs`, the same query the CLI, the web app
-and the eval use, so what a client gets back is what the measured recall was
-measured on. Only `install_assets` writes, and only where the caller says.
-
-Elsewhere, register it by absolute path:
-
-```json
-{ "mcpServers": { "kenney-assets": {
-    "command": "node",
-    "args": ["<path to repo>/mcp/server.mjs"],
-    "env": { "ASSETS_ROOT": "<path to extracted packs>" } } } }
-```
-
-## Commands
+## Updating
 
 ```bash
-assets catalog                     # refresh catalog from kenney.nl
-assets build                       # index the catalog + corpus
-assets analyze                     # structural pass (~40s for 27k images)
-assets search <query> [filters]    # find candidates
-assets sheet <ids> --out f.png     # composite a contact sheet
-assets install <pack|ids> --to <d> # copy out, with a typed manifest
-assets enrich                      # plan the description pass (costs money)
-assets enrich --sheets-only        # render sheets without spending
-assets enrich --ingest <file>      # apply descriptions written by hand
-assets eval                        # recall@10 by tier
-assets stats                       # what is indexed
-
-npm run dev                        # the app
-npm run extract -- --missing       # fetch every pack not yet on disk
+git pull
+node bin/assets setup --update
 ```
 
-`ASSETS_ROOT` points at the extracted corpus (default `assets/experimental`);
-`ASSETS_DB` relocates the index.
+This pulls new packs into the corpus, indexes them, and rewrites the skill.
 
-## Describing sprites
+## Other ways in
 
-A third of the corpus has filenames that say nothing (`tile_0147.png`), and
-only a description makes those findable. Two ways to produce them:
+- **MCP:** `mcp/server.mjs` exposes search, contact sheets, install and stats
+  over the Model Context Protocol (`.mcp.json` registers it for this folder).
+  It comes from upstream and has not been tested in this distribution.
+- **Web app:** `npm run dev` opens a browser over the same index.
+- **All commands:** `node bin/assets --help`.
 
-- **By looking.** `assets enrich --sheets-only` renders labelled contact
-  sheets, 64 sprites each. Read one, write the descriptions, apply them with
-  `assets enrich --ingest`. No API, no key, no bill.
-- **In bulk.** `assets enrich` prints a plan and a cost; `--submit` sends the
-  sheets through the Batch API. ~118 sheets for the images that need it.
+## How it is built
 
-Descriptions are exported to `descriptions/<pack>.json` and committed. They
-are the one tier that cannot be regenerated -- structural analysis re-runs
-from the pixels in 40 seconds, but a description is the product of someone
-looking at the sprite. `assets descriptions import` restores them into a
-rebuilt index, keyed by path rather than row id.
+[docs/CORPUS.md](docs/CORPUS.md) covers the corpus, the pack map, missing
+packs, building the index yourself, and every change made to upstream.
+[eval/README.md](eval/README.md) covers how search quality is measured.
 
-Either way, name what a thing is *for*. "Vertical strip with a checker seam"
-is accurate and useless; "ladder" is what somebody searches for. That single
-distinction moved semantic recall from 60% to 100%.
+## Credits
+
+- **[Kenney](https://kenney.nl):** every asset. CC0. Please
+  [donate](https://kenney.nl/donate).
+- **[kenney-asset-intelligence](https://github.com/skinnerboxentertainment/kenney-asset-intelligence)**
+  by Donchitos (MIT): the index, search, contact sheets, install, eval, MCP
+  server and web app this project is built on.
+- **[eturner58/game-assets](https://github.com/eturner58/game-assets):** the
+  collected corpus, its pack catalogue and sliced tile sheets. Forked at
+  [AAyberkU/game-assets](https://github.com/AAyberkU/game-assets) and cloned
+  by setup; this repository does not copy its catalogue.
+- **[Open Game SFX Index](https://github.com/Mcamento8/open-game-sfx-index)**
+  (MIT): sound tags, vendored in `vendor/open-game-sfx-index/`.
 
 ## License
 
-Code is MIT. Every asset is CC0 from [Kenney.nl](https://kenney.nl) — a donate
-link is in the UI and in every generated manifest. Please support Kenney.
+Code: MIT, see [LICENSE](LICENSE). Assets: CC0, by Kenney.
+
+Contact: Ahmet Ayberk Uzun ([AAyberkU](https://github.com/AAyberkU)),
+aayberkuzun@gmail.com. Issues and PRs are the best way to reach me about the
+project.

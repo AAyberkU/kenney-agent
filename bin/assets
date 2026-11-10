@@ -6,7 +6,20 @@ import { previewFile } from "../lib/previews.mjs"
 import { searchAssets } from "../lib/search.mjs"
 
 const USAGE = `
-assets -- query the Kenney asset index
+assets -- query the Kenney asset index (kenney-agent)
+
+setup (run once after cloning, and again after git pull):
+  assets setup                                clone the corpus, fetch the prebuilt
+                                              index, link packs, install the skill
+                 [--skill-dir <dir>]...       skills folder(s) to install into
+                                              (default: ~/.claude/skills)
+                 [--no-skill] [--force]       skip / overwrite a foreign skill
+                 [--corpus <path>]            use an existing game-assets checkout
+                 [--update]                   git pull the corpus first
+                 [--fresh-index]              replace the index with the release one
+                 [--index-file <zip>]         use a local index archive
+                 [--append <file>]            add local rules to the skill
+  assets pack-index [--out <zip>]             bundle the index for a release
 
   assets catalog [--all] [--packs a,b]        refresh catalog from kenney.nl
   assets catalog gen                          regenerate src/kenney/catalog.ts
@@ -44,9 +57,10 @@ audio and description helpers:
   assets describe-sheets <pack> --apply <f>   numbered descriptions -> merged
                  [--model m] [--style s]      into descriptions/<pack>.json
 
-local corpus (KenneyAssets, see LOCAL.md):
-  assets link                                 junction the local corpus in +
-                                              write catalog/catalog.local.json
+local corpus (the game-assets checkout, see docs/CORPUS.md):
+  assets link                                 link the corpus packs in (new pack
+                                              folders are detected) + write
+                                              catalog/catalog.local.json
   assets missing [query] [--limit n]          catalogued packs with no local
                                               copy (pack level, with links)
   assets fetch   <slug>                       download one pack from kenney.nl
@@ -73,8 +87,9 @@ search filters:
   --json            machine-readable output
 
 env:
-  ASSETS_ROOT   where the extracted packs live (default: ./assets/experimental)
-  ASSETS_DB     index location (default: ./index/assets.db)
+  ASSETS_ROOT        where the linked packs live (default: ./assets/experimental)
+  ASSETS_DB          index location (default: ./index/assets.db)
+  KENNEY_ASSETS_DIR  the game-assets checkout (default: ./corpus)
 `
 
 function cmdSearch(positionals, flags) {
@@ -180,6 +195,9 @@ const { values: flags, positionals } = parseArgs({
     submit: { type: "boolean" }, collect: { type: "string" }, model: { type: "string" },
     "sheets-only": { type: "boolean" }, ingest: { type: "string" }, trim: { type: "boolean" }, to: { type: "string" }, manifest: { type: "boolean" }, flat: { type: "boolean" }, cols: { type: "string" }, cell: { type: "string" }, label: { type: "string" }, validate: { type: "boolean" }, verbose: { type: "boolean" },
     help: { type: "boolean", short: "h" }, "dry-run": { type: "boolean" }, only: { type: "string" },
+    "skill-dir": { type: "string", multiple: true }, "no-skill": { type: "boolean" }, corpus: { type: "string" },
+    "corpus-url": { type: "string" }, "index-url": { type: "string" }, "index-file": { type: "string" },
+    "fresh-index": { type: "boolean" }, update: { type: "boolean" }, append: { type: "string" },
   },
 })
 
@@ -325,10 +343,27 @@ try {
       markAudited({ ids, paths })
       break
     }
+    case "setup": {
+      const { setup } = await import("../tools/local/setup.mjs")
+      await setup({
+        skillDirs: flags["skill-dir"] ?? null, noSkill: !!flags["no-skill"], force: !!flags.force,
+        corpus: flags.corpus, corpusUrl: flags["corpus-url"], update: !!flags.update,
+        indexUrl: flags["index-url"], indexFile: flags["index-file"], freshIndex: !!flags["fresh-index"],
+        append: flags.append,
+      })
+      break
+    }
+    case "pack-index": {
+      const { packIndex } = await import("../tools/local/pack-index.mjs")
+      const r = await packIndex(flags.out ? { out: flags.out } : {})
+      console.log(`  ${r.out}  ${(r.bytes / 1048576).toFixed(1)} MB  ${r.assets} assets, ${r.packs} packs, ${r.previews} preview files`)
+      break
+    }
     case "link": {
       const { link } = await import("../tools/local/link.mjs")
       const r = link({ dryRun: !!flags["dry-run"] })
       console.log(`  junctions: ${r.created} created, ${r.kept} kept, ${r.removed} removed, ${r.realDirs} real dirs left alone${r.missingTargets ? `, ${r.missingTargets} targets missing` : ""}`)
+      if (r.detected.length) console.log(`  new pack folders: ${r.detected.join(", ")}`)
       console.log(`  catalog.local.json: ${r.catalogPacks} packs (${r.localPacks} local, ${r.notLocal} not local)`)
       console.log("  next: assets build && assets analyze")
       break

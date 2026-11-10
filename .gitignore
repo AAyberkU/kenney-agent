@@ -122,3 +122,9 @@ catalog/catalog.local.json
 incoming/
 # Model renders and font specimens (assets render-previews)
 assets/renders/
+
+# === kenney-agent setup ===
+corpus/
+.kenney-agent.json
+release/
+index/index-info.json

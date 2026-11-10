@@ -1,40 +1,58 @@
-# Local corpus integration
+# Corpus and index
 
-This branch (`ayberk/local-integration`) runs the index over a local copy of the
-Kenney corpus instead of downloading every pack from kenney.nl.
+kenney-agent runs the index over a local copy of the Kenney corpus instead of
+downloading every pack from kenney.nl. `assets setup` puts the pieces in place;
+this page says what they are and how to rebuild them by hand.
 
 ## Pieces
 
 | Piece | Where | Role |
 | --- | --- | --- |
-| Corpus | `../KenneyAssets` (clone of `eturner58/game-assets`, Kenney All-in-1 v3.7.0) | The files: 2D, UI, icons, audio, 3D as GLB (FBX for the four character packs), sliced tiles |
+| Corpus | `./corpus` (shallow clone of [AAyberkU/game-assets](https://github.com/AAyberkU/game-assets), a fork of `eturner58/game-assets`; Kenney All-in-1 v3.7.0 content) | The files: 2D, UI, icons, audio, 3D as GLB (FBX for the four character packs), sliced tiles |
 | Slug map | `catalog/eturner58-map.json` (committed) | kenney.nl slug -> corpus folder, 256 entries |
+| New pack folders | detected by `assets link` | `kenney/<section>/<Pack Name>/` folders the map lacks, matched to a slug by name |
 | Extra packs | `catalog/extra-packs.json` (committed, hand-kept) | kenney.nl packs newer than the corpus and the scraped catalog |
 | Local catalog | `catalog/catalog.local.json` (generated, ignored) | Scraped catalog + corpus vision tags + extra packs; what the index reads |
-| Junctions | `assets/experimental/<slug>` (ignored) | Directory junctions into the corpus; nothing is copied |
+| Links | `assets/experimental/<slug>` (ignored) | Directory links into the corpus (junctions on Windows, symlinks elsewhere); nothing is copied |
+| Index | `index/assets.db` (ignored; prebuilt in each release) | One SQLite row per file with every enrichment tier |
+| Renders | `assets/renders/` (ignored; in each release) | 3D model previews and font specimens the index points at |
 | Incoming | `incoming/` (ignored) | Pack zips the user downloads by hand |
+| Settings | `.kenney-agent.json` (ignored) | What `assets setup` was given: corpus path, skills folders |
 
-Set `KENNEY_ASSETS_DIR` if the corpus is not at `../KenneyAssets`.
+The corpus is found at, in order: `KENNEY_ASSETS_DIR`, the path saved by
+`assets setup --corpus <path>`, `./corpus`, `../game-assets`, `../KenneyAssets`.
 
-## Setup from scratch
+## Adding packs to the corpus
+
+Pack folders added to the game-assets repository under
+`kenney/<section>/<Pack Name>/` need no change here. `assets link` (run by
+`assets setup`) finds folders the slug map does not list, matches each to a
+kenney.nl slug by its name (`Tiny City` -> `tiny-city`), and links it; setup
+then indexes and analyzes every linked pack the index lacks.
+
+## Building the index yourself
+
+`assets setup` downloads the prebuilt index. Without it (or to rebuild):
 
 ```bash
 npm install
-node bin/assets link                # junctions + catalog.local.json
+node bin/assets link                # links + catalog.local.json
 node bin/assets build               # index (seconds)
 node bin/assets analyze             # structural tier via sharp (minutes)
 node bin/assets descriptions import # committed vision descriptions
 node bin/assets audio               # audio facts via ffprobe/ffmpeg (~30 s)
 node bin/assets sfx-tags            # vendored Open Game SFX Index tags
+npx playwright install chromium     # once, for the next step
 node bin/assets render-previews     # 3D renders + font specimens (~1.5 min)
 node bin/assets eval                # recall@10
+node bin/assets pack-index          # release/kenney-agent-index.zip
 ```
 
-`tools/local/make-map.mjs [--site-map <json>]` regenerates the slug map after
-the corpus gains packs. The site map used on 2026-11-06 lives outside this
-repository, in Ayberk's Brain research notes.
+`tools/local/make-map.mjs [--site-map <json>]` regenerates the committed slug
+map from the corpus catalogue; with a kenney.nl site map (slug -> pack name)
+it matches more names exactly.
 
-## State on 2026-11-06
+## State of the 1.0 index (built 2026-11-06)
 
 - **Indexed:** 77,910 files (63,930 images, 1,342 audio, the rest 3D models,
   fonts and data) from 256 linked packs.
@@ -65,12 +83,21 @@ repository, in Ayberk's Brain research notes.
   builds and analyzes it.
 - If that fails, the zip goes into `incoming/` by hand and
   `assets ingest [--pack <slug>]` does the same from there.
-- A fetched or ingested pack is a real directory. It overrides the junction to
+- A fetched or ingested pack is a real directory. It overrides the link to
   the older corpus copy; `assets link` leaves it alone.
-- `removePack` and re-linking only ever unlink junctions. They never delete
+- `removePack` and re-linking only ever remove links. They never delete
   corpus files.
 
 ## Changes from upstream
+
+Upstream is [kenney-asset-intelligence](https://github.com/skinnerboxentertainment/kenney-asset-intelligence)
+(MIT, seed commit `43c3637`). Besides removing its unrelated game-studio
+template files (agent skills, OpenCode config, PixiJS plugin, studio docs):
+
+- `assets setup` (`tools/local/setup.mjs`) and `assets pack-index`
+  (`tools/local/pack-index.mjs`): one-command install with a prebuilt index.
+- `assets link` detects new pack folders and uses symlinks outside Windows.
+- The skill is a template: setup fills in this checkout's path.
 
 - `package.json`: removed a `file:` dependency on the author's local
   worktree (unused, broke `npm install`).

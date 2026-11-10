@@ -1,9 +1,11 @@
 /**
  * `assets link`: expose the local corpus (KenneyAssets) to the index.
  *
- * 1. For every entry in catalog/eturner58-map.json, create a directory
- *    junction <assetsRoot>/<slug> -> <corpus>/<path>. Nothing is copied, and
- *    junctions need no admin rights on Windows.
+ * 1. For every entry in catalog/eturner58-map.json, plus every pack folder
+ *    added to the corpus since (kenney/<section>/<Pack Name>/, see
+ *    detectNewPacks), create a directory link <assetsRoot>/<slug> ->
+ *    <corpus>/<path>. Nothing is copied. On Windows the link is a junction,
+ *    which needs no admin rights; elsewhere it is a plain symlink.
  *    - A real directory at <slug> (a pack fetched or ingested later) wins and
  *      is left alone.
  *    - An existing link is re-pointed; links for slugs no longer mapped are
@@ -16,8 +18,51 @@
 import fs from "node:fs"
 import path from "node:path"
 import { ROOT, assetsRoot, corpusRepoRoot, scrapedCatalogPath } from "../../lib/config.mjs"
+import { norm, slugify } from "./make-map.mjs"
 
 const MAP = path.join(ROOT, "catalog", "eturner58-map.json")
+const LINK_TYPE = process.platform === "win32" ? "junction" : "dir"
+
+const SECTION_CATEGORY = {
+  "2D assets": "2D", "3D assets": "3D", "Audio": "Audio",
+  "UI assets": "2D", "Icons": "2D", "Goodies": "Other", "Other": "Other",
+}
+
+/**
+ * Pack folders in the corpus that the committed map does not know: packs
+ * contributors added to the corpus repository after the map was generated.
+ * Each is matched by name against the kenney.nl catalogs (scraped + extra
+ * packs), so "kenney/2D assets/Tiny City" becomes the slug tiny-city; a name
+ * with no catalog entry gets a slug of its own and is marked localOnly.
+ */
+export function detectNewPacks(corpus, map, catalogPacks) {
+  const known = new Set(map.map((e) => e.path))
+  const used = new Set(map.map((e) => e.slug))
+  const byNorm = new Map(catalogPacks.map((p) => [norm(p.name), p]))
+  const bySlug = new Map(catalogPacks.map((p) => [p.slug, p]))
+  const found = []
+  const base = path.join(corpus, "kenney")
+  if (!fs.existsSync(base)) return found
+  for (const section of fs.readdirSync(base, { withFileTypes: true })) {
+    if (!section.isDirectory() || section.name.startsWith(".")) continue
+    for (const d of fs.readdirSync(path.join(base, section.name), { withFileTypes: true })) {
+      if (!d.isDirectory() || d.name.startsWith(".")) continue
+      const rel = `kenney/${section.name}/${d.name}`
+      if (known.has(rel)) continue
+      const hit = byNorm.get(norm(d.name)) ?? bySlug.get(slugify(d.name))
+      let slug = hit && !used.has(hit.slug) ? hit.slug : slugify(d.name)
+      if (used.has(slug)) slug = `${slug}-${slugify(section.name)}`
+      used.add(slug)
+      found.push({
+        slug, name: d.name, section: section.name,
+        category: hit?.category ?? SECTION_CATEGORY[section.name] ?? "Other",
+        path: rel, match: hit ? "detected" : "detected-slugified",
+        inScrapedCatalog: !!hit, localOnly: !hit, detected: true,
+      })
+    }
+  }
+  return found
+}
 
 function uniq(list) {
   return [...new Set(list.filter(Boolean).map((t) => String(t).toLowerCase().trim()).filter(Boolean))]
@@ -28,7 +73,12 @@ export function link({ dryRun = false } = {}) {
   if (!fs.existsSync(path.join(corpus, "catalog", "library.json"))) {
     throw new Error(`Local corpus not found at ${corpus}\nSet KENNEY_ASSETS_DIR to the KenneyAssets clone.`)
   }
-  const map = JSON.parse(fs.readFileSync(MAP, "utf-8")).packs
+  const scraped = JSON.parse(fs.readFileSync(scrapedCatalogPath(), "utf-8")).packs
+  const extraFile = path.join(ROOT, "catalog", "extra-packs.json")
+  const extra = fs.existsSync(extraFile) ? JSON.parse(fs.readFileSync(extraFile, "utf-8")).packs : []
+  const committed = JSON.parse(fs.readFileSync(MAP, "utf-8")).packs
+  const detected = detectNewPacks(corpus, committed, [...scraped, ...extra])
+  const map = [...committed, ...detected]
   const root = assetsRoot()
   fs.mkdirSync(root, { recursive: true })
 
@@ -50,20 +100,16 @@ export function link({ dryRun = false } = {}) {
       if (path.resolve(fs.readlinkSync(at)) === path.resolve(target)) { kept++; continue }
       if (!dryRun) fs.unlinkSync(at)
     }
-    if (!dryRun) fs.symlinkSync(target, at, "junction")
+    if (!dryRun) fs.symlinkSync(target, at, LINK_TYPE)
     created++
   }
 
   // -- 2. merged catalog --
   const lib = JSON.parse(fs.readFileSync(path.join(corpus, "catalog", "library.json"), "utf-8"))
   const libByPath = new Map(lib.map((p) => [p.path, p]))
-  const scraped = JSON.parse(fs.readFileSync(scrapedCatalogPath(), "utf-8")).packs
   const bySlug = new Map(scraped.map((p) => [p.slug, { ...p }]))
-  const extraFile = path.join(ROOT, "catalog", "extra-packs.json")
-  if (fs.existsSync(extraFile)) {
-    for (const p of JSON.parse(fs.readFileSync(extraFile, "utf-8")).packs) {
-      if (!bySlug.has(p.slug)) bySlug.set(p.slug, { previewUrl: null, fileCount: null, ...p })
-    }
+  for (const p of extra) {
+    if (!bySlug.has(p.slug)) bySlug.set(p.slug, { previewUrl: null, fileCount: null, ...p })
   }
 
   for (const e of map) {
@@ -103,6 +149,6 @@ export function link({ dryRun = false } = {}) {
       packs,
     }, null, 2) + "\n")
   }
-  return { created, kept, realDirs, removed, missingTargets, catalogPacks: packs.length,
+  return { created, kept, realDirs, removed, missingTargets, detected: detected.map((e) => e.slug), catalogPacks: packs.length,
     localPacks: packs.filter((p) => p.localPath).length, notLocal: packs.filter((p) => !p.localPath).length }
 }

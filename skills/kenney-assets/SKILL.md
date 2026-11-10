@@ -5,15 +5,16 @@ description: Find, look at and install CC0 Kenney game assets from a local index
 
 # Kenney asset library
 
-A local index over Kenney's CC0 game assets. The files live in a local corpus
-(`C:\Brain\workspace\KenneyAssets`, linked in as `assets/experimental/<slug>`);
-the index knows every file's size, role, style and, for some packs, a written
+A local index over Kenney's CC0 game assets, installed by
+[kenney-agent](https://github.com/AAyberkU/kenney-agent) at
+`{{KENNEY_AGENT}}`. The files live in a local corpus (a clone of the
+game-assets repository, linked in as `assets/experimental/<slug>`); the index
+knows every file's size, role, style and, for many packs, a written
 description. Packs that are catalogued but not on disk are known at pack level
 only: name, category, tags and kenney.nl links.
 
-**PuzzlePanic games:** the Puzzle Factory's
-`C:\Brain\workspace\PuzzlePanic\.kilo\skill\puzzle-factory\references\audiovisual.md`
-("Asset survey", "Kenney Assets") overrides this skill where they differ.
+If that path is still a placeholder in double braces, this copy was not
+installed by setup: run `node bin/assets setup` in the kenney-agent checkout.
 
 **Do not browse the corpus by hand.** Listing directories burns context and
 filenames lie: a quarter of them (`tile_0147.png`) say nothing. Query the index.
@@ -23,7 +24,7 @@ filenames lie: a quarter of them (`tile_0147.png`) say nothing. Query the index.
 Run from any directory:
 
 ```bash
-node C:/Brain/workspace/KenneyAssetIntelligence/bin/assets <command> ...
+node "{{KENNEY_AGENT}}/bin/assets" <command> ...
 ```
 
 Below, `assets` stands for that command.
@@ -75,7 +76,7 @@ Below, `assets` stands for that command.
         extracts, indexes and analyzes the pack.
      2. If the download fails or anything goes wrong, ask the user for it.
         Give the pack name and page link, and ask them to drop the zip into
-        `C:/Brain/workspace/KenneyAssetIntelligence/incoming/`.
+        `{{KENNEY_AGENT}}/incoming/`.
      3. When the zip is there, run `assets ingest`, then search again.
    - **A missing pack looks about as good, or "not bad":** use the local result.
      Tell the user the missing pack exists, with its link, and that it may be
@@ -116,8 +117,8 @@ Say which pack you picked and why, in one line.
 
 Other commands: `assets show <id>` (full record), `assets stats` (what is
 indexed), `assets render-previews` (render previews for new models and fonts
-after a pack is added), `assets link` (re-link the corpus after it changes, then
-`assets build && assets analyze`).
+after a pack is added), `assets setup --update` (pull new packs into the corpus, then link and index
+them).
 
 ## Audio
 
@@ -171,8 +172,8 @@ unless a description says so or you saw it on a sheet.
 
 All Kenney game assets are CC0: free for commercial use, attribution optional.
 
-- Credits are optional. PuzzlePanic games show none (operator, 2026-11-07);
-  elsewhere, follow the game's own rule.
+- Credits are optional; follow the game's own rule. Kenney makes all of this
+  free; `assets install` prints his donation link.
 - Flag these to the user before shipping:
   - Input Prompts packs: console glyphs are third-party trademarks.
   - Kenney Fonts: the TTF metadata says CC BY-SA 3.0, which contradicts its

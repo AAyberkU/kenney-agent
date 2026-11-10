@@ -2,25 +2,26 @@ name: CI
 
 on:
   push:
-    branches: [master]
+    branches: [main]
   pull_request:
-    branches: [master]
+    branches: [main]
   workflow_dispatch:
 
 jobs:
   verify:
-    runs-on: windows-latest
     strategy:
+      fail-fast: false
       matrix:
-        node-version: [22]
+        os: [windows-latest, ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup Node.js ${{ matrix.node-version }}
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 24
           cache: npm
 
       - name: Install dependencies
@@ -29,12 +30,8 @@ jobs:
       - name: TypeScript check
         run: npx tsc --noEmit
 
-      - name: Build
-        run: npx vite build
+      - name: CLI loads
+        run: node bin/assets --help
 
-      - name: Verify build output
-        run: |
-          if (-not (Test-Path "dist/index.html")) {
-            throw "Build output missing: dist/index.html"
-          }
-          Write-Output "Build output verified: dist/index.html ($((Get-Item dist/index.html).Length) bytes)"
+      - name: Build the web app
+        run: npx vite build

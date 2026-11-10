@@ -108,8 +108,7 @@ export function makeMap({ siteMapPath = null } = {}) {
   return entries
 }
 
-if (import.meta.url === `file:///${process.argv[1].split(path.sep).join("/")}` ||
-    process.argv[1]?.endsWith("make-map.mjs")) {
+if (process.argv[1]?.endsWith("make-map.mjs")) {
   const { values } = parseArgs({ options: { "site-map": { type: "string" } } })
   const entries = makeMap({ siteMapPath: values["site-map"] ?? null })
   const out = path.join(ROOT, "catalog", "eturner58-map.json")

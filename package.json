@@ -1,8 +1,16 @@
 {
-  "name": "universal-asset-edge-extractor",
+  "name": "kenney-agent",
   "private": true,
-  "version": "0.1.0",
-  "description": "Kenney.nl asset browser and pack installer",
+  "version": "1.0.0",
+  "description": "Kenney's CC0 game assets, indexed and searchable for coding agents",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AAyberkU/kenney-agent.git"
+  },
+  "engines": {
+    "node": ">=22.13"
+  },
   "type": "module",
   "scripts": {
     "dev": "vite",
