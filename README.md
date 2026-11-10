@@ -97,11 +97,11 @@ new pack folders by themselves.
 
 ## Platforms
 
-Built and tested on Windows. macOS and Linux should work (packs are linked
-with symlinks instead of junctions there) but have not been tested yet.
-Reports and PRs are welcome.
-
-The desktop launcher also works on macOS via `launcher/install-shortcut-mac.sh`.
+Built and tested on Windows. Tested on macOS (Apple Silicon, Node 26): setup,
+search, contact sheets and install work as documented; packs are linked with
+symlinks instead of junctions there. The desktop launcher works on macOS too:
+run `bash launcher/install-shortcut-mac.sh` to put an app on the desktop.
+Linux should work but has not been tested yet. Reports and PRs are welcome.
 
 ## Updating
 

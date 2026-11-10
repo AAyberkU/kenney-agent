@@ -1,9 +1,8 @@
 # Desktop launcher
 
 Double-click **Kenney Asset Index** on the desktop (a shortcut on Windows, an
-app on macOS). It starts the server if it
-is not already running, waits for it to answer, and opens the browser. No
-console window appears.
+app on macOS). It starts the server if it is not already running, waits for it
+to answer, and opens the browser. No console window appears.
 
 | file | what it is |
 |------|------------|
@@ -58,7 +57,8 @@ now checked, and a port counts as free only when every one of them is.
 **Stopping it.** The server keeps running in the background until you log out.
 To stop it sooner, end the node process whose command line mentions `vite`
 (Windows: the `node.exe` task in Task Manager; macOS: Activity Monitor, or
-`pkill -f "vite.*--port 782"`), or just leave it -- it is idle when nothing is using it.
+`pkill -f "vite.*--port 782"`), or just leave it -- it is idle when nothing is
+using it.
 
 **Failures are visible.** If dependencies are missing or the server does not
 come up in 90 seconds, a dialog explains why rather than the icon appearing to
