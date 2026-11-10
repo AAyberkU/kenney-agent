@@ -72,17 +72,44 @@ async function portFree(port) {
   return true
 }
 
+function detach(cmd, args) {
+  // A missing opener must not crash the launcher: swallow the spawn error.
+  const child = spawn(cmd, args, { detached: true, stdio: "ignore", windowsHide: true })
+  child.on("error", () => {})
+  child.unref()
+  return child
+}
+
 function openBrowser(url) {
+  if (process.platform === "darwin") return void detach("open", [url])
+  if (process.platform !== "win32") return void detach("xdg-open", [url])
   // `start` is a cmd builtin. The empty string is the window title it expects
   // before a quoted argument; without it the URL is consumed as the title.
-  spawn("cmd", ["/c", "start", "", url], { detached: true, stdio: "ignore", windowsHide: true }).unref()
+  detach("cmd", ["/c", "start", "", url])
 }
 
 function fail(message) {
   // There is no console to print to, so say it where it will be seen.
-  spawn("mshta", [
+  if (process.platform === "darwin") {
+    // The message travels as argv, never spliced into the script, so quotes
+    // or backslashes in it cannot be read as AppleScript.
+    detach("osascript", [
+      "-e", "on run argv",
+      "-e", 'display dialog (item 1 of argv) with title "Kenney Asset Index" buttons {"OK"} default button "OK" with icon stop',
+      "-e", "end run",
+      message,
+    ])
+    return
+  }
+  if (process.platform !== "win32") {
+    // No zenity (or no display): stderr is all that is left.
+    detach("zenity", ["--error", "--title=Kenney Asset Index", "--no-markup", "--text=" + message])
+      .on("error", () => console.error(message))
+    return
+  }
+  detach("mshta", [
     `javascript:var s=new ActiveXObject("WScript.Shell");s.Popup(${JSON.stringify(message)},0,"Kenney Asset Index",16);close()`,
-  ], { detached: true, stdio: "ignore", windowsHide: true }).unref()
+  ])
 }
 
 const vite = path.join(ROOT, "node_modules", "vite", "bin", "vite.js")

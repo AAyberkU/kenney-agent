@@ -101,6 +101,8 @@ Built and tested on Windows. macOS and Linux should work (packs are linked
 with symlinks instead of junctions there) but have not been tested yet.
 Reports and PRs are welcome.
 
+The desktop launcher also works on macOS via `launcher/install-shortcut-mac.sh`.
+
 ## Updating
 
 ```bash
